@@ -1,8 +1,8 @@
-# consultor-bolsavalores-backend
+# Consultoria Bolsa de Valores - Backend
 Project with the features of Consultoria system
 
 --------------------
-Initial steps - Eclipe
+Initial steps - Eclipse
 
 
 1) Criar um workspace ex: C:\Git\Repositorio
