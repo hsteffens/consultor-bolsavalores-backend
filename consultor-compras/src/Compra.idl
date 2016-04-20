@@ -1,0 +1,17 @@
+/**
+*
+* @author helinton.steffens
+*/
+module Compras {
+
+	typedef sequence<string> AcoesCod;
+
+  interface Compra  {
+  
+  	void getMelhoresOpcoesCompras(out AcoesCod codigosAcoes);
+  	void getMelhoresOpcoesComprasPorBolsa(in long bolsa, out AcoesCod codigosAcoes);
+  	void getMelhoresOpcoesComprasPorCliente(in long codigoCliente, out AcoesCod codigosAcoes);
+    oneway void shutdown();
+  };
+  
+};
