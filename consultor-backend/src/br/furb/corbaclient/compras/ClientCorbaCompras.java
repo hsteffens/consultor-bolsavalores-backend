@@ -1,5 +1,7 @@
 package br.furb.corbaclient.compras;
 
+import java.util.Properties;
+
 import org.omg.CORBA.ORB;
 import org.omg.CosNaming.NamingContextExt;
 import org.omg.CosNaming.NamingContextExtHelper;
@@ -11,7 +13,12 @@ import Compras.CompraHelper;
 public class ClientCorbaCompras {
 	public static void main(String[] args) {
 		try {
-			ORB orb = ORB.init(args, null);
+			
+			Properties props = new Properties();
+			props.put("org.omg.CORBA.ORBInitialPort", "1050");
+			props.put("org.omg.CORBA.ORBInitialHost", "localhost");
+			
+			ORB orb = ORB.init(args, props);
 			org.omg.CORBA.Object objRef = orb.resolve_initial_references("NameService");
 			NamingContextExt ncRef = NamingContextExtHelper.narrow(objRef);
 			Compra compra = (Compra) CompraHelper.narrow(ncRef.resolve_str("ConsultoriaCompras"));
