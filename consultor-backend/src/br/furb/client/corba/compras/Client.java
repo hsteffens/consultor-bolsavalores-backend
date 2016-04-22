@@ -10,6 +10,12 @@ import Compras.AcoesCodHolder;
 import Compras.Compra;
 import Compras.CompraHelper;
 
+/**
+ * Classe de client CORBA da aplicação de compras.
+ * 
+ * @author helinton.steffens
+ *
+ */
 public class Client {
 	public static void main(String[] args) {
 		try {

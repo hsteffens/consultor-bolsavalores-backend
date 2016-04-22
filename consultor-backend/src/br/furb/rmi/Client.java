@@ -2,6 +2,12 @@ package br.furb.rmi;
 
 import java.rmi.Naming;
 
+/**
+ * Classe de client RMI da aplicação de vendas.
+ * 
+ * @author helinton.steffens
+ *
+ */
 public class Client {
 	public static void main(String[] args) {
 		  try {

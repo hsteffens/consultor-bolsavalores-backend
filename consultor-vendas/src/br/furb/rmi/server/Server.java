@@ -7,6 +7,12 @@ import java.rmi.RemoteException;
 
 import br.furb.rmi.ConsultorVendas;
 
+/**
+ * Classe de servidor RMI da aplicação de vendas.
+ * 
+ * @author helinton.steffens
+ *
+ */
 public class Server {
 
 	public static void main(String[] args) {
@@ -22,6 +28,6 @@ public class Server {
 			System.err.println("ERROR: " + e);
 			e.printStackTrace(System.out);
 		}
-		System.out.println("Server Exiting ...");
+		System.out.println("Server running ...");
 	}
 }

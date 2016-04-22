@@ -13,6 +13,12 @@ import Compras.Compra;
 import Compras.CompraHelper;
 import Compras.CompraObj;
 
+/**
+ * Classe de servidor CORBA da aplicação de compras.
+ * 
+ * @author helinton.steffens
+ *
+ */
 public class Server {
 
 	public static void main(String[] args) {
@@ -56,7 +62,7 @@ public class Server {
 			e.printStackTrace(System.out);
 		}
 
-		System.out.println("Server Exiting ...");
+		System.out.println("Server running ...");
 
 	}
 }
