@@ -1,4 +1,4 @@
-package br.furb.corbaclient.compras;
+package br.furb.client.corba.compras;
 
 import java.util.Properties;
 
@@ -10,7 +10,7 @@ import Compras.AcoesCodHolder;
 import Compras.Compra;
 import Compras.CompraHelper;
 
-public class ClientCorbaCompras {
+public class Client {
 	public static void main(String[] args) {
 		try {
 			
