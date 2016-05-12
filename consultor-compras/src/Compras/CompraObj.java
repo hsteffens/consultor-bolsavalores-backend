@@ -2,7 +2,11 @@ package Compras;
 
 import java.rmi.RemoteException;
 
+import org.joda.time.LocalDateTime;
 import org.omg.CORBA.ORB;
+
+import entities.AcaoBolsa;
+import entities.Usuario;
 
 /**
  * Classe que representa a impletamentação das ações disponivel no sistema.
@@ -42,7 +46,13 @@ public class CompraObj extends CompraPOA {
 	 */
 	@Override
 	public void getMelhoresOpcoesComprasPorBolsa(int bolsa, AcoesCodHolder codigosAcoes) {
-		codigosAcoes.value = new String[]{"PETR4"};
+		String nomeAcao = "";
+		try {
+			nomeAcao = AcaoBolsa.getBolsaValores("PETR4").getNomeAcao();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		codigosAcoes.value = new String[]{nomeAcao};
 	}
 
 	/**
@@ -54,9 +64,26 @@ public class CompraObj extends CompraPOA {
 	 * @throws RemoteException
 	 */
 	@Override
-	public void getMelhoresOpcoesComprasPorCliente(int codigoCliente,
-			AcoesCodHolder codigosAcoes) {
-		codigosAcoes.value = new String[]{"GOOG"};
+	public void getMelhoresOpcoesComprasPorCliente(int codigoCliente, AcoesCodHolder codigosAcoes) {
+		String nomeAcao = "";
+		try {
+			Usuario usuario = AcaoBolsa.getUsuario(codigoCliente);
+			if (usuario != null) {
+				if (usuario.getTipoInvestidor() == 1) {
+					LocalDateTime dataHora = LocalDateTime.now().minusDays(1);
+					nomeAcao = AcaoBolsa.getAcaoBolsaDentroValidade("GOOG",dataHora).getNomeAcao();
+				}else if (usuario.getTipoInvestidor() == 2) {
+					LocalDateTime dataHora = LocalDateTime.now().minusHours(1);
+					nomeAcao = AcaoBolsa.getAcaoBolsaDentroValidade("GOOG",dataHora).getNomeAcao();
+				} else{
+					LocalDateTime dataHora = LocalDateTime.now();
+					nomeAcao = AcaoBolsa.getAcaoBolsaDentroValidade("GOOG", dataHora).getNomeAcao();
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		codigosAcoes.value = new String[]{nomeAcao};
 	}
 
 	@Override
