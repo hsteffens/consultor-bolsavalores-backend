@@ -13,7 +13,7 @@ public class Client {
 		  try {
 		      String server = "//localhost/ConsultorVendas";	
 		      IConsultorVendas consultor =  (IConsultorVendas)Naming.lookup(server);
-		      System.out.println("The result is: " + consultor.getMelhoresOpcoesVendasPorCliente(1));
+		      System.out.println("The result is: " + consultor.getMelhoresOpcoesVendas());
 		    }
 		    catch(Exception e) {
 		      System.out.println("Exception: " + e);

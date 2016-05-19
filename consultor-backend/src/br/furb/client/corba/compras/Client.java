@@ -28,10 +28,12 @@ public class Client {
 			org.omg.CORBA.Object objRef = orb.resolve_initial_references("NameService");
 			NamingContextExt ncRef = NamingContextExtHelper.narrow(objRef);
 			Compra compra = (Compra) CompraHelper.narrow(ncRef.resolve_str("ConsultoriaCompras"));
-			AcoesCodHolder codigosAcoes = new AcoesCodHolder();
-			compra.getMelhoresOpcoesComprasPorCliente(1, codigosAcoes);
+			AcoesCodHolder acoesHolder = new AcoesCodHolder();
+			compra.getMelhoresOpcoesCompras(acoesHolder);
 			
-			System.out.println("The result is : " + codigosAcoes.value[0]);
+			for (String codigoAcao : acoesHolder.value) {
+				System.out.println("The result is : " + codigoAcao);
+			}
 			System.out.println("-----------------------------------");
 		} catch (Exception e) {
 			System.out.println("Client exception: " + e);

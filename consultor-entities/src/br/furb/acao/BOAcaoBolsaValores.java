@@ -1,45 +1,37 @@
 package br.furb.acao;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.ws.rs.core.MediaType;
+
+import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
+
+import br.furb.converter.ConverterAcaoBolsaValor;
+
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.config.ClientConfig;
+import com.sun.jersey.api.client.config.DefaultClientConfig;
 
 import entities.AcaoBolsaValores;
-import entities.EnTipoMoeda;
 
 public class BOAcaoBolsaValores {
 
-private static List<AcaoBolsaValores> lAcoes;
-	
-	static{
-		lAcoes = new ArrayList<AcaoBolsaValores>();
-		
-		AcaoBolsaValores petrobras = new AcaoBolsaValores();
-		petrobras.setCodigo("PETR4");
-		petrobras.setNomeAcao("Petrobras");
-		petrobras.setMoeda(EnTipoMoeda.REAL);
-		petrobras.setValorAbertura(9.48);
-		petrobras.setPercentual(-0.60);
-		
-		AcaoBolsaValores google = new AcaoBolsaValores();
-		google.setCodigo("GOOG");
-		google.setNomeAcao("Alphabet Inc Class C");
-		google.setMoeda(EnTipoMoeda.DOLAR);
-		google.setValorAbertura(712.00);
-		google.setPercentual(1.78);
-		
-		lAcoes.add(petrobras);
-		lAcoes.add(google);
-		
-		
-	}
-	
 	public static AcaoBolsaValores getAcaoBolsaValores(String codigoAcao){
-		for (AcaoBolsaValores acaoBolsaValores : lAcoes) {
-			if (acaoBolsaValores.getCodigo().equals(codigoAcao)) {
-				return acaoBolsaValores;
-			}
+		ClientConfig cc = new DefaultClientConfig();
+		cc.getClasses().add(JacksonJsonProvider.class);
+		Client client = Client.create(cc);
+		
+		WebResource webResource = client.resource("http://localhost:8080/br.furb.consultor-busca-dados/consultor/acaobolsa/"+codigoAcao);
+
+		ClientResponse response = webResource.accept(MediaType.APPLICATION_JSON).get(ClientResponse.class);
+
+		if (response.getStatus() != 200) {
+		   throw new RuntimeException("Failed : HTTP error code : "
+			+ response.getStatus());
 		}
 
-		return new AcaoBolsaValores();
+		AcaoBolsaDTO acaoBolsaDTO = response.getEntity(AcaoBolsaDTO.class);
+
+		return ConverterAcaoBolsaValor.converterBolsaValores(acaoBolsaDTO);
 	}
 }

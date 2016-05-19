@@ -1,9 +1,23 @@
 package Compras;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.ws.rs.core.MediaType;
+
+import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 import org.joda.time.LocalDateTime;
 import org.omg.CORBA.ORB;
+
+import br.furb.papeis.PapelDTO;
+
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.GenericType;
+import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.config.ClientConfig;
+import com.sun.jersey.api.client.config.DefaultClientConfig;
 
 import entities.AcaoBolsa;
 import entities.Usuario;
@@ -30,7 +44,28 @@ public class CompraObj extends CompraPOA {
 	 */
 	@Override
 	public void getMelhoresOpcoesCompras(AcoesCodHolder codigosAcoes) {
-		codigosAcoes.value = new String[]{"PETR4","GOOG"};
+		ClientConfig cc = new DefaultClientConfig();
+		cc.getClasses().add(JacksonJsonProvider.class);
+		Client client = Client.create(cc);
+		
+		WebResource webResource = client.resource("http://localhost:8080/br.furb.consultor-busca-dados/consultor/acaobolsa/melhoropcao/compra");
+
+		ClientResponse response = webResource.accept(MediaType.APPLICATION_JSON).get(ClientResponse.class);
+
+		if (response.getStatus() != 200) {
+		   throw new RuntimeException("Failed : HTTP error code : "
+			+ response.getStatus());
+		}
+
+		List<PapelDTO> lPapeis = response.getEntity(new GenericType<List<PapelDTO>>(){});
+		
+		List<String> acoes = new ArrayList<String>();
+		for (PapelDTO Papel : lPapeis) {
+			acoes.add(Papel.getCodigo());
+		}
+		
+		
+		codigosAcoes.value = (String[]) acoes.toArray(new String[]{});
 		// TODO Auto-generated method stub
 
 	}

@@ -6,7 +6,7 @@ public class AcaoBolsaValores {
 
 	private String codigo;
 	private String nomeAcao;
-	private long volumeMedioDiario;
+	private double volumeMedioDiario;
 	private double valorAtual;
 	private double variacaoValor;
 	private double variacaoPercentual;
@@ -17,12 +17,12 @@ public class AcaoBolsaValores {
 	private double maiorValorDia;
 	private double menorValorAno;
 	private double maiorValorAno;
-	private double capitalMercado;
-	private double EBITDA;
+	private String capitalMercado;
+	private String EBITDA;
 	private double valorAbertura;
 	private double ultimoValorFechamento;
 	private double percentual;
-	private double exchange;
+	private String exchange;
 	public String getCodigo() {
 		return codigo;
 	}
@@ -35,10 +35,10 @@ public class AcaoBolsaValores {
 	public void setNomeAcao(String nomeAcao) {
 		this.nomeAcao = nomeAcao;
 	}
-	public long getVolumeMedioDiario() {
+	public double getVolumeMedioDiario() {
 		return volumeMedioDiario;
 	}
-	public void setVolumeMedioDiario(long volumeMedioDiario) {
+	public void setVolumeMedioDiario(double volumeMedioDiario) {
 		this.volumeMedioDiario = volumeMedioDiario;
 	}
 	public double getVariacaoValor() {
@@ -95,16 +95,16 @@ public class AcaoBolsaValores {
 	public void setMaiorValorAno(double maiorValorAno) {
 		this.maiorValorAno = maiorValorAno;
 	}
-	public double getCapitalMercado() {
+	public String getCapitalMercado() {
 		return capitalMercado;
 	}
-	public void setCapitalMercado(double capitalMercado) {
+	public void setCapitalMercado(String capitalMercado) {
 		this.capitalMercado = capitalMercado;
 	}
-	public double getEBITDA() {
+	public String getEBITDA() {
 		return EBITDA;
 	}
-	public void setEBITDA(double eBITDA) {
+	public void setEBITDA(String eBITDA) {
 		EBITDA = eBITDA;
 	}
 	public double getValorAbertura() {
@@ -125,10 +125,10 @@ public class AcaoBolsaValores {
 	public void setPercentual(double percentual) {
 		this.percentual = percentual;
 	}
-	public double getExchange() {
+	public String getExchange() {
 		return exchange;
 	}
-	public void setExchange(double exchange) {
+	public void setExchange(String exchange) {
 		this.exchange = exchange;
 	}
 	public double getValorAtual() {

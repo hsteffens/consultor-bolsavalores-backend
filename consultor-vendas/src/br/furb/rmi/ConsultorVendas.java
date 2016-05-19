@@ -5,7 +5,19 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ws.rs.core.MediaType;
+
+import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 import org.joda.time.LocalDateTime;
+
+import br.furb.papel.PapelDTO;
+
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.GenericType;
+import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.config.ClientConfig;
+import com.sun.jersey.api.client.config.DefaultClientConfig;
 
 import entities.AcaoBolsa;
 import entities.Usuario;
@@ -23,9 +35,25 @@ public class ConsultorVendas extends UnicastRemoteObject implements IConsultorVe
 	}
 
 	public List<String> getMelhoresOpcoesVendas() {
+		ClientConfig cc = new DefaultClientConfig();
+		cc.getClasses().add(JacksonJsonProvider.class);
+		Client client = Client.create(cc);
+		
+		WebResource webResource = client.resource("http://localhost:8080/br.furb.consultor-busca-dados/consultor/acaobolsa/melhoropcao/venda");
+
+		ClientResponse response = webResource.accept(MediaType.APPLICATION_JSON).get(ClientResponse.class);
+
+		if (response.getStatus() != 200) {
+		   throw new RuntimeException("Failed : HTTP error code : "
+			+ response.getStatus());
+		}
+
+		List<PapelDTO> lPapeis = response.getEntity(new GenericType<List<PapelDTO>>(){});
+		
 		List<String> acoes = new ArrayList<String>();
-		acoes.add("PETR4");
-		acoes.add("GOOGL");
+		for (PapelDTO Papel : lPapeis) {
+			acoes.add(Papel.getCodigo());
+		}
 		return acoes;
 	}
 
