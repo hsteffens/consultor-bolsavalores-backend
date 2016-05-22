@@ -6,6 +6,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import br.furb.consultor.buscadados.FacadeAcaoBolsa;
@@ -18,8 +19,8 @@ public class ServicoAcoesBolsa {
 	@GET
 	@Path("{acao}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public AcaoBolsaDTO getAcaoBolsaValor(@PathParam("acao") String codigoAcao){
-		return FacadeAcaoBolsa.getAcaoBolsaValores(codigoAcao);
+	public AcaoBolsaDTO getAcaoBolsaValor(@PathParam("acao") String codigoAcao, @QueryParam("time") Long time){
+		return FacadeAcaoBolsa.getAcaoBolsaValores(codigoAcao, time == null ? 0 : time);
 	}
 	
 	@GET
