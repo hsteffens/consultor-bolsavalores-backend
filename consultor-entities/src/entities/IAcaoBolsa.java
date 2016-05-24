@@ -5,8 +5,6 @@ import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
 import javax.jws.soap.SOAPBinding.Style;
 
-import org.joda.time.LocalDateTime;
-
 @WebService
 @SOAPBinding(style = Style.RPC)
 public interface IAcaoBolsa {
@@ -15,7 +13,7 @@ public interface IAcaoBolsa {
 	AcaoBolsaValores getAcaoBolsa(String codigoAcao);
 	
 	@WebMethod
-	AcaoBolsaValores getAcaoBolsaDentroValidade(String codigoAcao, LocalDateTime dataHoraValide);
+	AcaoBolsaValores getAcaoBolsaDentroValidade(String codigoAcao,Long inicio, Long expira);
 
 	@WebMethod
 	Usuario getUsuario(long codigoUsuario);

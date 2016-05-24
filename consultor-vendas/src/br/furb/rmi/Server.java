@@ -1,11 +1,9 @@
-package br.furb.rmi.server;
+package br.furb.rmi;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.rmi.Naming;
 import java.rmi.RemoteException;
-
-import br.furb.rmi.ConsultorVendas;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 
 /**
  * Classe de servidor RMI da aplicação de vendas.
@@ -17,12 +15,14 @@ import br.furb.rmi.ConsultorVendas;
 
 	public static void main(String[] args) {
 		try {
-			String absolutePath = System.getProperty("user.dir");
-			Runtime.getRuntime().exec("cmd /c start "+ absolutePath + "\\src\\br\\furb\\rmi\\server\\start.bat");
+//			String absolutePath = System.getProperty("user.dir");
+//			Runtime.getRuntime().exec("cmd /c start "+ absolutePath + "\\src\\br\\furb\\rmi\\start.bat");
 			
 			ConsultorVendas consultorVendas = new ConsultorVendas();
-			Naming.rebind("//localhost/ConsultorVendas", consultorVendas);
-		} catch (RemoteException | MalformedURLException e) {
+			LocateRegistry.createRegistry(1099);
+	        Registry registry = LocateRegistry.getRegistry(1099);
+	        registry.rebind("//localhost/ConsultorVendas", consultorVendas);
+		} catch (RemoteException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			System.err.println("ERROR: " + e);

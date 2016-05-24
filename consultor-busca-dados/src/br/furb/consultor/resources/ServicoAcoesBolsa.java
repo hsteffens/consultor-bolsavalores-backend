@@ -9,6 +9,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import org.joda.time.LocalDateTime;
+
 import br.furb.consultor.buscadados.FacadeAcaoBolsa;
 import br.furb.consultor.entities.AcaoBolsaDTO;
 import br.furb.consultor.entities.PapelDTO;
@@ -19,8 +21,8 @@ public class ServicoAcoesBolsa {
 	@GET
 	@Path("{acao}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public AcaoBolsaDTO getAcaoBolsaValor(@PathParam("acao") String codigoAcao, @QueryParam("time") Long time){
-		return FacadeAcaoBolsa.getAcaoBolsaValores(codigoAcao, time == null ? 0 : time);
+	public AcaoBolsaDTO getAcaoBolsaValor(@PathParam("acao") String codigoAcao,@QueryParam("inicio") Long inicio, @QueryParam("expira") Long expira){
+		return FacadeAcaoBolsa.getAcaoBolsaValores(codigoAcao, new LocalDateTime(inicio), expira == null ? 0 : expira);
 	}
 	
 	@GET

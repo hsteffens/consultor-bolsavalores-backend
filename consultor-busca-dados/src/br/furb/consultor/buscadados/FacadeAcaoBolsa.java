@@ -11,6 +11,7 @@ import javax.xml.bind.Unmarshaller;
 
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.joda.time.LocalDateTime;
 
 import br.furb.consultor.bovespa.destaque.AcaoDestaque;
 import br.furb.consultor.converter.ConverterPapel;
@@ -19,6 +20,7 @@ import br.furb.consultor.entities.PapelDTO;
 import br.furb.consultor.redis.ClientRedis;
 import br.furb.consultor.redis.IClientRedis;
 import br.furb.consultor.redis.RedisConn;
+import br.furb.consultor.time.BOClock;
 import br.furb.consultor.yahoo.BOYahoo;
 
 import com.lambdaworks.redis.RedisConnection;
@@ -32,15 +34,15 @@ public final class FacadeAcaoBolsa {
 
 	}
 
-	public static AcaoBolsaDTO getAcaoBolsaValores(String codigoAcao, Long time){
+	public static AcaoBolsaDTO getAcaoBolsaValores(String codigoAcao,LocalDateTime horaInicial, Long expire){
 		AcaoBolsaDTO acaoBolsaDTO = new AcaoBolsaDTO();
 
 		IClientRedis client = new ClientRedis(RedisConn.REDIS_URI);
 		RedisConnection<String, String> params = client.getRedisConnection();
 		try{
-			acaoBolsaDTO = carregaAcaoBolsaCache(codigoAcao, time, params);
+			acaoBolsaDTO = carregaAcaoBolsaCache(codigoAcao,horaInicial, expire, params);
 			if (acaoBolsaDTO == null) {
-				acaoBolsaDTO = carregaAcaoBolsaYahoo(codigoAcao, time, params);
+				acaoBolsaDTO = carregaAcaoBolsaYahoo(codigoAcao, expire, params);
 			}
 
 		}finally{
@@ -68,9 +70,18 @@ public final class FacadeAcaoBolsa {
 		return acaoBolsaDTO;
 	}
 
-	private static AcaoBolsaDTO carregaAcaoBolsaCache(String codigoAcao, Long time, RedisConnection<String, String> params) {
+	private static AcaoBolsaDTO carregaAcaoBolsaCache(String codigoAcao,LocalDateTime horaInicial, Long time, RedisConnection<String, String> params) {
+		LocalDateTime timeClockServer = BOClock.getTimeExternalServer("129.6.15.28");
+		System.out.println("Hora Servidor" + timeClockServer);
+		System.out.println("Hora Inicio" + horaInicial);
 		Long tempoHaExpirar = params.ttl(codigoAcao);
-		if (tempoHaExpirar > 0 && time > tempoHaExpirar) {
+		System.out.println("Expira em:" + tempoHaExpirar);
+		
+		long delay = timeClockServer.toDate().getTime() - horaInicial.toDate().getTime();
+		long tempoExpiracao = delay + time;
+		System.out.println("Tempo de expera:" + tempoExpiracao);
+
+		if (tempoHaExpirar > 0 && tempoHaExpirar > tempoExpiracao) {
 			String acaoJson = params.get(codigoAcao);
 			if (!StringUtils.isBlank(acaoJson)) {
 				StringReader reader = new StringReader(acaoJson);

@@ -7,9 +7,9 @@ import java.util.List;
 import javax.ws.rs.core.MediaType;
 
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
-import org.joda.time.LocalDateTime;
 import org.omg.CORBA.ORB;
 
+import br.furb.consultor.time.BOClock;
 import br.furb.papeis.PapelDTO;
 
 import com.sun.jersey.api.client.Client;
@@ -66,7 +66,6 @@ public class CompraObj extends CompraPOA {
 		
 		
 		codigosAcoes.value = (String[]) acoes.toArray(new String[]{});
-		// TODO Auto-generated method stub
 
 	}
 
@@ -104,16 +103,15 @@ public class CompraObj extends CompraPOA {
 		try {
 			Usuario usuario = AcaoBolsa.getUsuario(codigoCliente);
 			if (usuario != null) {
-				if (usuario.getTipoInvestidor() == 1) {
-					LocalDateTime dataHora = LocalDateTime.now().minusDays(1);
-					nomeAcao = AcaoBolsa.getAcaoBolsaDentroValidade("GOOG",dataHora).getNomeAcao();
-				}else if (usuario.getTipoInvestidor() == 2) {
-					LocalDateTime dataHora = LocalDateTime.now().minusHours(1);
-					nomeAcao = AcaoBolsa.getAcaoBolsaDentroValidade("GOOG",dataHora).getNomeAcao();
-				} else{
-					LocalDateTime dataHora = LocalDateTime.now();
-					nomeAcao = AcaoBolsa.getAcaoBolsaDentroValidade("GOOG", dataHora).getNomeAcao();
+				Long expira = 0l;
+				if (usuario.getTipoInvestidor() == EnTipoInvestidor.CONSERVADOR.getCodigo()) {
+					expira = 1800000l;//Cada 30 Minutos
+				}else if (usuario.getTipoInvestidor() == EnTipoInvestidor.MODERADO.getCodigo()) {
+					expira = 600000l;//Cada 10 Minutos
+				} else if (usuario.getTipoInvestidor() == EnTipoInvestidor.AGRESSIVO.getCodigo()){
+					expira = 60000l;//Cada Minuto
 				}
+				nomeAcao = AcaoBolsa.getAcaoBolsaDentroValidade("GOOG",BOClock.getUTCTimeServer().toDate().getTime(), expira).getNomeAcao();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

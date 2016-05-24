@@ -29,7 +29,7 @@ public class Client {
 			NamingContextExt ncRef = NamingContextExtHelper.narrow(objRef);
 			Compra compra = (Compra) CompraHelper.narrow(ncRef.resolve_str("ConsultoriaCompras"));
 			AcoesCodHolder acoesHolder = new AcoesCodHolder();
-			compra.getMelhoresOpcoesCompras(acoesHolder);
+			compra.getMelhoresOpcoesComprasPorCliente(1, acoesHolder);
 			
 			for (String codigoAcao : acoesHolder.value) {
 				System.out.println("The result is : " + codigoAcao);

@@ -8,8 +8,8 @@ import java.util.List;
 import javax.ws.rs.core.MediaType;
 
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
-import org.joda.time.LocalDateTime;
 
+import br.furb.consultor.time.BOClock;
 import br.furb.papel.PapelDTO;
 
 import com.sun.jersey.api.client.Client;
@@ -72,16 +72,15 @@ public class ConsultorVendas extends UnicastRemoteObject implements IConsultorVe
 		try {
 			Usuario usuario = AcaoBolsa.getUsuario(codigoUsuario);
 			if (usuario != null) {
-				if (usuario.getTipoInvestidor() == 1) {
-					LocalDateTime dataHora = LocalDateTime.now().minusDays(1);
-					acoes.add(AcaoBolsa.getAcaoBolsaDentroValidade("GOOG", dataHora).getNomeAcao());
-				}else if (usuario.getTipoInvestidor() == 2) {
-					LocalDateTime dataHora = LocalDateTime.now().minusHours(1);
-					acoes.add(AcaoBolsa.getAcaoBolsaDentroValidade("GOOG", dataHora).getNomeAcao());
-				} else{
-					LocalDateTime dataHora = LocalDateTime.now();
-					acoes.add(AcaoBolsa.getAcaoBolsaDentroValidade("GOOG", dataHora).getNomeAcao());
+				Long expira = 0l;
+				if (usuario.getTipoInvestidor() == EnTipoInvestidor.CONSERVADOR.getCodigo()) {
+					expira = 1800000l;//Cada 30 Minutos
+				}else if (usuario.getTipoInvestidor() == EnTipoInvestidor.MODERADO.getCodigo()) {
+					expira = 600000l;//Cada 10 Minutos
+				} else if (usuario.getTipoInvestidor() == EnTipoInvestidor.AGRESSIVO.getCodigo()){
+					expira = 60000l;//Cada Minuto
 				}
+				acoes.add(AcaoBolsa.getAcaoBolsaDentroValidade("PETR4.SA",BOClock.getUTCTimeServer().toDate().getTime(), expira).getNomeAcao());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

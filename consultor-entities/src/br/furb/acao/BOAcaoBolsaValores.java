@@ -16,15 +16,16 @@ import entities.AcaoBolsaValores;
 
 public class BOAcaoBolsaValores {
 
-	public static AcaoBolsaValores getAcaoBolsaValores(String codigoAcao){
+	public static AcaoBolsaValores getAcaoBolsaValores(String codigoAcao,Long inicioMs, Long time){
 		ClientConfig cc = new DefaultClientConfig();
 		cc.getClasses().add(JacksonJsonProvider.class);
 		Client client = Client.create(cc);
 		
-		WebResource webResource = client.resource("http://localhost:8080/br.furb.consultor-busca-dados/consultor/acaobolsa/"+codigoAcao);
-
+		WebResource webResource = client.resource("http://localhost:8080/br.furb.consultor-busca-dados/consultor/acaobolsa/"+codigoAcao).
+				queryParam("inicio", inicioMs.toString()).
+				queryParam("expira", time.toString());
+		
 		ClientResponse response = webResource.accept(MediaType.APPLICATION_JSON).get(ClientResponse.class);
-
 		if (response.getStatus() != 200) {
 		   throw new RuntimeException("Failed : HTTP error code : "
 			+ response.getStatus());

@@ -1,12 +1,10 @@
 package entities;
 
-import javax.xml.namespace.QName;
-import javax.xml.ws.Service;
-
-import org.joda.time.LocalDateTime;
-
 import java.net.MalformedURLException;
 import java.net.URL;
+
+import javax.xml.namespace.QName;
+import javax.xml.ws.Service;
 
 public class AcaoBolsa {
 
@@ -14,10 +12,10 @@ public class AcaoBolsa {
 		IAcaoBolsa acao = connect();
 		return acao.getAcaoBolsa(codigo);
 	}
-
-	public static AcaoBolsaValores getAcaoBolsaDentroValidade(String codigo, LocalDateTime dataHoraValidade) throws Exception {
+	
+	public static AcaoBolsaValores getAcaoBolsaDentroValidade(String codigo,Long inicio, Long expira) throws Exception {
 		IAcaoBolsa acao = connect();
-		return acao.getAcaoBolsaDentroValidade(codigo, dataHoraValidade);
+		return acao.getAcaoBolsaDentroValidade(codigo, inicio, expira);
 	}
 
 	public static Usuario getUsuario(long codigoUsuario) throws Exception {
