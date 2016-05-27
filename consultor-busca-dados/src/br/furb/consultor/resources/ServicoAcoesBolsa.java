@@ -24,7 +24,7 @@ public class ServicoAcoesBolsa {
 	public AcaoBolsaDTO getAcaoBolsaValor(@PathParam("acao") String codigoAcao,@QueryParam("inicio") Long inicio, @QueryParam("expira") Long expira){
 		return FacadeAcaoBolsa.getAcaoBolsaValores(codigoAcao, new LocalDateTime(inicio), expira == null ? 0 : expira);
 	}
-	
+
 	@GET
 	@Path("/melhoropcao/venda")
 	@Produces(MediaType.APPLICATION_JSON)

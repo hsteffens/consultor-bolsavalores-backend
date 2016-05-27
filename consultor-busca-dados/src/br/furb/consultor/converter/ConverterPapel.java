@@ -14,9 +14,11 @@ public final class ConverterPapel {
 	
 	public static List<PapelDTO> converterPapel(List<Papel> lPapel){
 		List<PapelDTO> lPapelDTO = new ArrayList<PapelDTO>();
-		for (Papel papel : lPapel) {
-			lPapelDTO.add(converterPaper(papel));
-		}
+		if (lPapel != null) {
+			for (Papel papel : lPapel) {
+				lPapelDTO.add(converterPaper(papel));
+			}
+		}	
 		
 		return lPapelDTO;
 	}
