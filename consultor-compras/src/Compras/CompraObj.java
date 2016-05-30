@@ -9,7 +9,6 @@ import javax.ws.rs.core.MediaType;
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 import org.omg.CORBA.ORB;
 
-import br.furb.consultor.time.BOClock;
 import br.furb.papeis.PapelDTO;
 
 import com.sun.jersey.api.client.Client;
@@ -81,11 +80,12 @@ public class CompraObj extends CompraPOA {
 	@Override
 	public void getMelhoresOpcoesComprasPorBolsa(int bolsa, AcoesCodHolder codigosAcoes) {
 		String nomeAcao = "";
-		try {
-			nomeAcao = AcaoBolsa.getBolsaValores("PETR4").getNomeAcao();
-		} catch (Exception e) {
-			e.printStackTrace();
+		if (bolsa == 1) {
+			nomeAcao = "GGBR4";
+		}else{
+			nomeAcao = "ABEV3";
 		}
+		
 		codigosAcoes.value = new String[]{nomeAcao};
 	}
 
@@ -103,19 +103,14 @@ public class CompraObj extends CompraPOA {
 		try {
 			Usuario usuario = AcaoBolsa.getUsuario(codigoCliente);
 			if (usuario != null) {
-				Long expira = 0l;
-				if (usuario.getTipoInvestidor() == EnTipoInvestidor.CONSERVADOR.getCodigo()) {
-					expira = 1800000l;//Cada 30 Minutos
-				}else if (usuario.getTipoInvestidor() == EnTipoInvestidor.MODERADO.getCodigo()) {
-					expira = 600000l;//Cada 10 Minutos
-				} else if (usuario.getTipoInvestidor() == EnTipoInvestidor.AGRESSIVO.getCodigo()){
-					expira = 60000l;//Cada Minuto
-				}
-				nomeAcao = AcaoBolsa.getAcaoBolsaDentroValidade("GOOG",BOClock.getUTCTimeServer().toDate().getTime(), expira).getNomeAcao();
+				nomeAcao = "GGBR4";
+			}else{
+				nomeAcao = "ABEV3";
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	
 		codigosAcoes.value = new String[]{nomeAcao};
 	}
 

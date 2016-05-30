@@ -47,7 +47,7 @@ public final class FacadeVendaAcao {
 
 		try {
 			List<String> opcoes = venda.getMelhoresOpcoesVendasPorCliente(codigoUsuario);
-			return getAcoesDTO(opcoes);
+			return getAcoesDTO(opcoes, codigoUsuario);
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
@@ -60,6 +60,17 @@ public final class FacadeVendaAcao {
 		List<AcaoBolsaDTO> acoes = new ArrayList<AcaoBolsaDTO>();
 		for (String codigo : opcoes) {
 			acoes.add(BOAcaoBolsaValores.getAcaoBolsa(codigo));
+		}
+		
+		acoesDTO.setResult(acoes);
+		return acoesDTO;
+	}
+
+	private static AcoesDTO getAcoesDTO(List<String> opcoes, Long usuario) {
+		AcoesDTO acoesDTO = new AcoesDTO();
+		List<AcaoBolsaDTO> acoes = new ArrayList<AcaoBolsaDTO>();
+		for (String codigo : opcoes) {
+			acoes.add(BOAcaoBolsaValores.getAcaoBolsa(codigo, usuario));
 		}
 		
 		acoesDTO.setResult(acoes);

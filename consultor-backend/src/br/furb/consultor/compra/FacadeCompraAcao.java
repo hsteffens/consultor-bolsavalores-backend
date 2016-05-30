@@ -36,7 +36,7 @@ public final class FacadeCompraAcao {
 		AcoesCodHolder acoesHolder = new AcoesCodHolder();
 		compra.getMelhoresOpcoesComprasPorCliente(codigoCliente, acoesHolder);
 		
-		return getAcoesDTO(acoesHolder);
+		return getAcoesDTO(acoesHolder, codigoCliente);
 	}
 	
 	private static AcoesDTO getAcoesDTO(AcoesCodHolder acoesHolder) {
@@ -50,4 +50,16 @@ public final class FacadeCompraAcao {
 		
 		return acoesDTO;
 	}
+	private static AcoesDTO getAcoesDTO(AcoesCodHolder acoesHolder, Integer usuario) {
+		List<AcaoBolsaDTO> acoesCompra = new ArrayList<AcaoBolsaDTO>();
+		for (String codigo : acoesHolder.value) {
+			acoesCompra.add(BOAcaoBolsaValores.getAcaoBolsa(codigo, usuario.longValue()));
+		}
+		
+		AcoesDTO acoesDTO = new AcoesDTO();
+		acoesDTO.setResult(acoesCompra);
+		
+		return acoesDTO;
+	}
+	
 }

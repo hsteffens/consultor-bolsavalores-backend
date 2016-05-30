@@ -3,13 +3,13 @@ package br.furb.rmi;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.ws.rs.core.MediaType;
 
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 
-import br.furb.consultor.time.BOClock;
 import br.furb.papel.PapelDTO;
 
 import com.sun.jersey.api.client.Client;
@@ -58,34 +58,24 @@ public class ConsultorVendas extends UnicastRemoteObject implements IConsultorVe
 	}
 
 	public List<String> getMelhoresOpcoesVendasPorBolsa(long codigoBolsa) {
-		List<String> acoes = new ArrayList<String>();
-		try {
-			acoes.add(AcaoBolsa.getBolsaValores("PETR4").getNomeAcao());
-		} catch (Exception e) {
-			e.printStackTrace();
+		if (codigoBolsa == 1) {
+			return Collections.singletonList("PETR4");
+		}else{
+			return Collections.singletonList("ABEV3");
+			
 		}
-		return acoes;
 	}
 
 	public List<String> getMelhoresOpcoesVendasPorCliente(long codigoUsuario) {
-		List<String> acoes = new ArrayList<String>();
 		try {
 			Usuario usuario = AcaoBolsa.getUsuario(codigoUsuario);
 			if (usuario != null) {
-				Long expira = 0l;
-				if (usuario.getTipoInvestidor() == EnTipoInvestidor.CONSERVADOR.getCodigo()) {
-					expira = 1800000l;//Cada 30 Minutos
-				}else if (usuario.getTipoInvestidor() == EnTipoInvestidor.MODERADO.getCodigo()) {
-					expira = 600000l;//Cada 10 Minutos
-				} else if (usuario.getTipoInvestidor() == EnTipoInvestidor.AGRESSIVO.getCodigo()){
-					expira = 60000l;//Cada Minuto
-				}
-				acoes.add(AcaoBolsa.getAcaoBolsaDentroValidade("PETR4.SA",BOClock.getUTCTimeServer().toDate().getTime(), expira).getNomeAcao());
+				return Collections.singletonList("PETR4");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return acoes;
+		return Collections.singletonList("ABEV3");
 	}
 
 }

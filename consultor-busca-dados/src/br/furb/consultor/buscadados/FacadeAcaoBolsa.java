@@ -55,7 +55,7 @@ public final class FacadeAcaoBolsa {
 	private static AcaoBolsaDTO carregaAcaoBolsaYahoo(String codigoAcao,
 			Long time, RedisConnection<String, String> params) {
 		AcaoBolsaDTO acaoBolsaDTO;
-		acaoBolsaDTO = BOYahoo.getAcaoBolsaValores(codigoAcao);
+		acaoBolsaDTO = BOYahoo.getAcaoBolsaValores(codigoAcao.concat(".SA"));
 		ObjectMapper mapper = new ObjectMapper();
 		
 		try {
@@ -72,14 +72,10 @@ public final class FacadeAcaoBolsa {
 
 	private static AcaoBolsaDTO carregaAcaoBolsaCache(String codigoAcao,LocalDateTime horaInicial, Long time, RedisConnection<String, String> params) {
 		LocalDateTime timeClockServer = BOClock.getTimeExternalServer("129.6.15.28");
-		System.out.println("Hora Servidor" + timeClockServer);
-		System.out.println("Hora Inicio" + horaInicial);
 		Long tempoHaExpirar = params.ttl(codigoAcao);
-		System.out.println("Expira em:" + tempoHaExpirar);
 		
 		long delay = timeClockServer.toDate().getTime() - horaInicial.toDate().getTime();
 		long tempoExpiracao = delay + time;
-		System.out.println("Tempo de expera:" + tempoExpiracao);
 
 		if (tempoHaExpirar > 0 && tempoHaExpirar > tempoExpiracao) {
 			String acaoJson = params.get(codigoAcao);
