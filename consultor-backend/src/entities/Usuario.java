@@ -1,4 +1,4 @@
-package br.furb.consultor.entities;
+package entities;
 
 public class Usuario {
 	

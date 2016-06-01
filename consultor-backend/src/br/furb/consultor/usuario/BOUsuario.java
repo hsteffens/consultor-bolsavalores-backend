@@ -6,8 +6,8 @@ import java.net.URL;
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
 
-import br.furb.consultor.acao.IAcaoBolsa;
-import br.furb.consultor.entities.Usuario;
+import entities.IAcaoBolsa;
+import entities.Usuario;
 
 public final class BOUsuario {
 
