@@ -8,7 +8,6 @@ public class ClockServer {
 
 	public static void main(String[] args) {
 		try {
-			
 			IClockSystem clock = new ClockSystem();
 			LocateRegistry.createRegistry(2000);
 	        Registry registry = LocateRegistry.getRegistry(2000);

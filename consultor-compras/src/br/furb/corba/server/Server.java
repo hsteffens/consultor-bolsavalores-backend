@@ -32,7 +32,7 @@ public class Server {
 			props.put("org.omg.CORBA.ORBInitialPort", "1050");
 			props.put("org.omg.CORBA.ORBInitialHost", "localhost");
 			ORB orb = ORB.init(args, props);
-			
+
 			POA rootpoa = POAHelper.narrow(orb.resolve_initial_references("RootPOA"));
 			rootpoa.the_POAManager().activate();
 
@@ -44,7 +44,8 @@ public class Server {
 			org.omg.CORBA.Object ref = rootpoa.servant_to_reference(compra);
 			Compra href = CompraHelper.narrow(ref);
 
-			org.omg.CORBA.Object objRef = orb.resolve_initial_references("NameService");
+			NamingContextExt ctx = NamingContextExtHelper.narrow(orb.resolve_initial_references("NameService"));
+			org.omg.CORBA.Object objRef = ctx;
 
 			NamingContextExt ncRef = NamingContextExtHelper.narrow(objRef);
 

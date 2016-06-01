@@ -3,6 +3,7 @@ package br.furb.consultor.time;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Calendar;
@@ -11,9 +12,10 @@ import java.util.TimeZone;
 
 import org.apache.commons.net.ntp.NTPUDPClient;
 import org.apache.commons.net.ntp.TimeInfo;
+import org.joda.time.LocalDate;
 
 public class ClockSystem extends UnicastRemoteObject implements IClockSystem {
-	
+
 	ClockSystem() throws RemoteException{
 		super();
 	}
@@ -30,24 +32,18 @@ public class ClockSystem extends UnicastRemoteObject implements IClockSystem {
 		client.setDefaultTimeout(10000);
 		try {
 			client.open();
-				try {
-					InetAddress hostAddr = InetAddress.getByName(ip);
-					System.out.println("> " + hostAddr.getHostName() + "/" + hostAddr.getHostAddress());
-					TimeInfo info = client.getTime(hostAddr);
-					info.computeDetails(); 
-					Long offsetValue = info.getOffset();
-					Long delayValue = info.getDelay();
-					String delay = (delayValue == null) ? "N/A" : delayValue.toString();
-					String offset = (offsetValue == null) ? "N/A" : offsetValue.toString();
+			try {
+				InetAddress hostAddr = InetAddress.getByName(ip);
+				TimeInfo info = client.getTime(hostAddr);
+				info.computeDetails(); 
+				Long offsetValue = info.getOffset();
 
-					System.out.println(" Roundtrip delay(ms)=" + delay
-							+ ", clock offset(ms)=" + offset); // offset in ms
-					
-					
-					return offsetValue;
-				} catch (IOException ioe) {
-					ioe.printStackTrace();
-				}
+				return offsetValue;
+			} catch (SocketTimeoutException e) {
+				System.out.println("Timeout connection for the ip:"+ ip+" at "+ new LocalDate(getUTCTimeInMillis()));
+			}catch (IOException ioe) {
+				ioe.printStackTrace();
+			} 
 		} catch (SocketException e) {
 			e.printStackTrace();
 		}
