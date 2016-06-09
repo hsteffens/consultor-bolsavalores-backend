@@ -8,15 +8,16 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import br.furb.consultor.autenticacao.BOAutenticacao;
+import br.furb.consultor.entities.TokenDTO;
 
 @Path("/auth")
 public class ServicoAutenticacao {
 	 
 	@POST
-	@Path("id/{id}/user/{username}/passoword/{password}")
+	@Path("user/{username}/passoword/{password}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response logon(@PathParam("id") String id, @PathParam("username") String username, @PathParam("password") String password){
-		return BOAutenticacao.createJWT(id, username, password, 1800000l);
+	public TokenDTO logon(@PathParam("username") String userName, @PathParam("password") String password){
+		return BOAutenticacao.logon(userName, password);
 	}
 	
 	@POST

@@ -1,18 +1,25 @@
 package br.furb.consultor.autenticacao;
 
-import javax.crypto.spec.SecretKeySpec;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.xml.bind.DatatypeConverter;
-
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtBuilder;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.SignatureAlgorithm;
 
 import java.security.Key;
+import java.util.Date;
+import java.util.UUID;
 
-import io.jsonwebtoken.*;
+import javax.crypto.spec.SecretKeySpec;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.xml.bind.DatatypeConverter;
 
-import java.util.Date;    
+import org.joda.time.LocalDateTime;
+
+import br.furb.consultor.entities.TokenDTO;
 
 
 public final class BOAutenticacao {
@@ -20,8 +27,19 @@ public final class BOAutenticacao {
 	private BOAutenticacao(){
 		
 	}
+	
+	public static TokenDTO logon(String userName, String password){
+		if (!"helinton.pereira".equals(userName) || !"123456".equals(password)){
+			ResponseBuilder builder = null;
+	        String response = "Usuário/Senha inválida";
+	        builder = Response.status(Response.Status.UNAUTHORIZED).entity(response);
+	        throw new WebApplicationException(builder.build());
+		}
+		
+		return createJWT("1", "helinton pereira", 1800000l);
+	}
 
-	public static Response createJWT(String id, String issuer, String subject, long ttlMillis) {
+	public static TokenDTO createJWT(String id, String nome, long ttlMillis) {
 
 		//The JWT signature algorithm we will be using to sign the token
 		SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
@@ -35,10 +53,12 @@ public final class BOAutenticacao {
 		Key signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
 
 		//Let's set the JWT Claims
-		JwtBuilder builder = Jwts.builder().setId(id)
+		String jwt = Jwts.builder().setId(UUID.randomUUID().toString()).compact();
+
+		JwtBuilder builder = Jwts.builder().setId(jwt)
 				.setIssuedAt(now)
-				.setSubject(subject)
-				.setIssuer(issuer)
+				.claim("id", id)
+				.claim("nome", nome)
 				.signWith(signatureAlgorithm, signingKey);
 
 		//if it has been specified, let's add the expiration
@@ -47,38 +67,32 @@ public final class BOAutenticacao {
 			Date exp = new Date(expMillis);
 			builder.setExpiration(exp);
 		}
+		
+		TokenDTO tokenDTO = new TokenDTO();
+		tokenDTO.setToken(builder.compact());
 
 		//Builds the JWT and serializes it to a compact, URL-safe string
-		return Response.ok(builder.compact()).build();
+		return tokenDTO;
 	}
 	
 	//Sample method to validate and read the JWT
 	public static Response parseJWT(String jwt) {
 		APIKey apiKey = new APIKey();
 		//This line will throw an exception if it is not a signed JWS (as expected)
+		Claims claims;        
 		try{
-			Claims claims = Jwts.parser()         
-					.setSigningKey(DatatypeConverter.parseBase64Binary(apiKey.getSecretKey()))
+			claims = Jwts.parser().setSigningKey(DatatypeConverter.parseBase64Binary(apiKey.getSecretKey()))
 					.parseClaimsJws(jwt).getBody();
 			LocalDateTime dataHoraExpiracao = new LocalDateTime(claims.getExpiration().getTime());
 			if (dataHoraExpiracao.isBefore(new LocalDateTime())) {
-				return Response.status(401).type(MediaType.APPLICATION_JSON).entity(new Exception("O formato token informado está expirado")).build();
+				return Response.status(401).type(MediaType.APPLICATION_JSON).entity(new Exception("O token informado está expirado")).build();
 			}
-			
-			if (!"consultor-bolsa-valores".equals(claims.getId())) {
-				return Response.status(401).type(MediaType.APPLICATION_JSON).entity(new Exception("A aplicação informada é inválida")).build();
-			}
-			
-			if (!"helinton.pereira".equals(claims.getIssuer()) || !"123456".equals(claims.getSubject())){
-				return Response.status(401).type(MediaType.APPLICATION_JSON).entity(new Exception("Usuário/Senha inválida")).build();
-			}
-			
 			
 		}catch(MalformedJwtException e){
 			return Response.status(401).type(MediaType.APPLICATION_JSON).entity(new Exception("O token informado é inválido")).build();
 		}
 		
-		return Response.ok().build();
+		return Response.ok().entity(claims.getIssuer()).build();
 	}
 
 }
