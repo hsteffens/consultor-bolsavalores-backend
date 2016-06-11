@@ -1,7 +1,6 @@
 package controle;
 
 import controle.exceptions.NonexistentEntityException;
-import controle.exceptions.PreexistingEntityException;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -28,7 +27,7 @@ public class SugestaoVendaJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(SugestaoVenda sugestaoVenda) throws PreexistingEntityException, Exception {
+    public void create(SugestaoVenda sugestaoVenda) {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -44,11 +43,6 @@ public class SugestaoVendaJpaController implements Serializable {
                 cdUsuario = em.merge(cdUsuario);
             }
             em.getTransaction().commit();
-        } catch (Exception ex) {
-            if (findSugestaoVenda(sugestaoVenda.getCdVenda()) != null) {
-                throw new PreexistingEntityException("SugestaoVenda " + sugestaoVenda + " already exists.", ex);
-            }
-            throw ex;
         } finally {
             if (em != null) {
                 em.close();

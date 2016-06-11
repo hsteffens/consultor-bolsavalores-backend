@@ -1,7 +1,6 @@
 package controle;
 
 import controle.exceptions.NonexistentEntityException;
-import controle.exceptions.PreexistingEntityException;
 import java.io.Serializable;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
@@ -30,7 +29,7 @@ public class TipoInvestidorJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(TipoInvestidor tipoInvestidor) throws PreexistingEntityException, Exception {
+    public void create(TipoInvestidor tipoInvestidor) {
         if (tipoInvestidor.getUsuarioCollection() == null) {
             tipoInvestidor.setUsuarioCollection(new ArrayList<Usuario>());
         }
@@ -55,11 +54,6 @@ public class TipoInvestidorJpaController implements Serializable {
                 }
             }
             em.getTransaction().commit();
-        } catch (Exception ex) {
-            if (findTipoInvestidor(tipoInvestidor.getCdInvestidor()) != null) {
-                throw new PreexistingEntityException("TipoInvestidor " + tipoInvestidor + " already exists.", ex);
-            }
-            throw ex;
         } finally {
             if (em != null) {
                 em.close();

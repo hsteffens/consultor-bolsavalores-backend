@@ -4,6 +4,8 @@ import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -23,7 +25,9 @@ import javax.persistence.Table;
     @NamedQuery(name = "CarteiraCliente.findByVlQuantidade", query = "SELECT c FROM CarteiraCliente c WHERE c.vlQuantidade = :vlQuantidade")})
 public class CarteiraCliente implements Serializable {
     private static final long serialVersionUID = 1L;
+    
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "cd_carteira")
     private Integer cdCarteira;

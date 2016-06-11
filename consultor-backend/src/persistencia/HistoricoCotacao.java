@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -23,7 +25,9 @@ import javax.persistence.Table;
     @NamedQuery(name = "HistoricoCotacao.findByDsCodigo", query = "SELECT h FROM HistoricoCotacao h WHERE h.dsCodigo = :dsCodigo")})
 public class HistoricoCotacao implements Serializable {
     private static final long serialVersionUID = 1L;
+    
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "cd_historico")
     private Integer cdHistorico;

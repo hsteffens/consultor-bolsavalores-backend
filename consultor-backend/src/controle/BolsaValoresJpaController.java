@@ -1,7 +1,6 @@
 package controle;
 
 import controle.exceptions.NonexistentEntityException;
-import controle.exceptions.PreexistingEntityException;
 import java.io.Serializable;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
@@ -30,7 +29,7 @@ public class BolsaValoresJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(BolsaValores bolsaValores) throws PreexistingEntityException, Exception {
+    public void create(BolsaValores bolsaValores) {
         if (bolsaValores.getAcaoCollection() == null) {
             bolsaValores.setAcaoCollection(new ArrayList<Acao>());
         }
@@ -55,11 +54,6 @@ public class BolsaValoresJpaController implements Serializable {
                 }
             }
             em.getTransaction().commit();
-        } catch (Exception ex) {
-            if (findBolsaValores(bolsaValores.getCdBolsavalores()) != null) {
-                throw new PreexistingEntityException("BolsaValores " + bolsaValores + " already exists.", ex);
-            }
-            throw ex;
         } finally {
             if (em != null) {
                 em.close();

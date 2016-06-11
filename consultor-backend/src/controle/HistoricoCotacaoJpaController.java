@@ -1,7 +1,6 @@
 package controle;
 
 import controle.exceptions.NonexistentEntityException;
-import controle.exceptions.PreexistingEntityException;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -27,18 +26,13 @@ public class HistoricoCotacaoJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(HistoricoCotacao historicoCotacao) throws PreexistingEntityException, Exception {
+    public void create(HistoricoCotacao historicoCotacao) {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
             em.persist(historicoCotacao);
             em.getTransaction().commit();
-        } catch (Exception ex) {
-            if (findHistoricoCotacao(historicoCotacao.getCdHistorico()) != null) {
-                throw new PreexistingEntityException("HistoricoCotacao " + historicoCotacao + " already exists.", ex);
-            }
-            throw ex;
         } finally {
             if (em != null) {
                 em.close();
