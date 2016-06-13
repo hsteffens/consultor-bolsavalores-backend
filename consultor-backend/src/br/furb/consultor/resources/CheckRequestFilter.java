@@ -22,7 +22,8 @@ public class CheckRequestFilter implements ContainerRequestFilter {
 	
 	@Override
 	public ContainerRequest filter(ContainerRequest request) {
-		if (!request.getRequestUri().getPath().contains("/br.furb.consultor-backend/consultor/auth/")) {
+		if (!request.getRequestUri().getPath().contains("/auth/") &&
+				!request.getRequestUri().getPath().contains("/user/create")) {
 			String authCredentials = request.getHeaderValue(AUTHENTICATION_HEADER);
 	
 			Response response = BOAutenticacao.parseJWT(authCredentials);

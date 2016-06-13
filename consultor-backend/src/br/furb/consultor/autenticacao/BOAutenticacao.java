@@ -19,7 +19,10 @@ import javax.xml.bind.DatatypeConverter;
 
 import org.joda.time.LocalDateTime;
 
+import controle.exceptions.UsuarioException;
 import br.furb.consultor.entities.TokenDTO;
+import br.furb.consultor.entities.UsuarioDTO;
+import br.furb.consultor.usuario.BOUsuario;
 
 
 public final class BOAutenticacao {
@@ -29,17 +32,18 @@ public final class BOAutenticacao {
 	}
 	
 	public static TokenDTO logon(String userName, String password){
-		if (!"helinton.pereira".equals(userName) || !"123456".equals(password)){
+		try{
+			UsuarioDTO usuario = BOUsuario.getUsuario(userName, password);
+			return createJWT(usuario.getId(), usuario.getNome(), 1800000l);
+		}catch(UsuarioException e){
 			ResponseBuilder builder = null;
-	        String response = "Usuário/Senha inválida";
-	        builder = Response.status(Response.Status.UNAUTHORIZED).entity(response);
-	        throw new WebApplicationException(builder.build());
+			builder = Response.status(Response.Status.UNAUTHORIZED).entity(e.getError());
+			throw new WebApplicationException(builder.build());
 		}
 		
-		return createJWT("1", "helinton pereira", 1800000l);
 	}
 
-	public static TokenDTO createJWT(String id, String nome, long ttlMillis) {
+	public static TokenDTO createJWT(Integer id, String nome, long ttlMillis) {
 
 		//The JWT signature algorithm we will be using to sign the token
 		SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;

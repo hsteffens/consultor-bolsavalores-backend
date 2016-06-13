@@ -2,6 +2,7 @@ package br.furb.consultor.entities;
 
 public class UsuarioDTO {
 
+	private Integer id;
 	private String userName;
 	private String password;
 	private Long cpf;
@@ -10,6 +11,13 @@ public class UsuarioDTO {
 	private String profissao;
 	private Integer perfilInvestidor;
 	private Integer formaOperacao;
+	
+	public Integer getId() {
+		return id;
+	}
+	public void setId(Integer id) {
+		this.id = id;
+	}
 	public String getUserName() {
 		return userName;
 	}
