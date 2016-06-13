@@ -13,6 +13,7 @@ import persistencia.LoginUsuario;
 import persistencia.TipoInvestidor;
 import persistencia.TipoTransacao;
 import persistencia.Usuario;
+import provider.EntityManager;
 import controle.LoginUsuarioJpaController;
 import controle.TipoInvestidorJpaController;
 import controle.TipoTransacaoJpaController;
@@ -28,7 +29,7 @@ public final class FacadeUsuario {
 	}
 	
 	public static void inserirUsuario(String nome, BigInteger cpf, String email, String userName, String password, Integer perfilInvestidor,Integer formaInvestimento, String profissao){
-		EntityManagerFactory factory = Persistence.createEntityManagerFactory("BolsaValoresPU");
+		EntityManagerFactory factory = EntityManager.getFactory();
         Usuario usuario = new Usuario();
         usuario.setCdCpf(cpf);
         
@@ -93,7 +94,7 @@ public final class FacadeUsuario {
 	}
 	
 	public static Object[] getUsuario(String userName, String password){
-		EntityManagerFactory factory = Persistence.createEntityManagerFactory("BolsaValoresPU");
+		EntityManagerFactory factory = EntityManager.getFactory();
 		LoginUsuarioJpaController loginUsuarioJpaController = new LoginUsuarioJpaController(factory);
 		LoginUsuario loginUsuario = loginUsuarioJpaController.findUsuario(userName, password);
 		Object[] fields = new Object[loginUsuario.getCdUsuario().getClass().getDeclaredFields().length];

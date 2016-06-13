@@ -26,4 +26,7 @@
 		<servlet-name>Jersey Web Application</servlet-name>
 		<url-pattern>/consultor/*</url-pattern>
 	</servlet-mapping>
+	<listener>
+		<listener-class>br.furb.consultor.system.System</listener-class>
+   </listener>
 </web-app>
