@@ -89,8 +89,68 @@ public final class FacadeUsuario {
 			throw new UsuarioException(ex.getMessage());
 		}
         
-        factory.close();
-		
+	}
+	
+	public static void alterarUsuario(Integer idUsuario, String nome, BigInteger cpf, String email, String userName, String password, Integer perfilInvestidor,Integer formaInvestimento, String profissao){
+		EntityManagerFactory factory = EntityManager.getFactory();
+        Usuario usuario = new Usuario();
+        usuario.setCdUsuario(idUsuario);
+        usuario.setCdCpf(cpf);
+        
+        if (perfilInvestidor != null) {
+        	TipoInvestidorJpaController tipoInvestidorJpaController = new TipoInvestidorJpaController(factory);
+        	usuario.setCdInvestidor(tipoInvestidorJpaController.findTipoInvestidor(perfilInvestidor));
+        }
+        
+        if (formaInvestimento != null) {
+        	TipoTransacaoJpaController tipoTransacaoJpaController = new TipoTransacaoJpaController(factory);
+        	usuario.setCdTransacao(tipoTransacaoJpaController.findTipoTransacao(formaInvestimento));
+		}
+        
+        usuario.setDsEmail(email);
+        usuario.setDsNome(nome);
+        usuario.setDsProfissao(profissao);
+                
+        UsuarioJpaController usuarioJpaController = new UsuarioJpaController(factory);
+        
+        try {
+        	usuarioJpaController.edit(usuario);
+        } catch (PersistenceException ex) {
+        	if (ex.getCause() instanceof ConstraintViolationException) {
+        		throw new UsuarioException("Já existe um usuário cadastrado com este email/cpf!");
+			}
+        	throw new UsuarioException(ex.getMessage());
+        }  catch (Exception ex) {
+			throw new UsuarioException(ex.getMessage());
+		}
+        
+        try{
+	        LoginUsuario loginUsuario = new LoginUsuario();
+	        loginUsuario.setCdUsuario(usuario);
+	        loginUsuario.setDsUserName(userName);
+	        loginUsuario.setDsPassword(password);
+	        
+	        LoginUsuarioJpaController loginUsuarioJpaController = new LoginUsuarioJpaController(factory);
+	        loginUsuarioJpaController.edit(loginUsuario);
+        }catch (PersistenceException ex) {
+        	try {
+				usuarioJpaController.destroyByCpf(cpf);
+			} catch (NonexistentEntityException e) {
+				throw new UsuarioException(ex.getMessage());
+			}
+        	if (ex.getCause().getCause() instanceof ConstraintViolationException) {
+        		throw new UsuarioException("Já existe um usuário cadastrado com este username!");
+			}
+        	throw new UsuarioException(ex.getMessage());
+        }  catch (Exception ex) {
+        	try {
+				usuarioJpaController.destroyByCpf(cpf);
+			} catch (NonexistentEntityException e) {
+				throw new UsuarioException(ex.getMessage());
+			}
+			throw new UsuarioException(ex.getMessage());
+		}
+        
 	}
 	
 	public static Object[] getUsuario(String userName, String password){
@@ -126,6 +186,44 @@ public final class FacadeUsuario {
 		    }
 		    
 		    count++;
+		}
+		
+		return fields;
+	}
+	public static Object[] getUsuario(Integer id){
+		EntityManagerFactory factory = EntityManager.getFactory();
+		UsuarioJpaController usuarioJpaController = new UsuarioJpaController(factory);
+		Usuario usuario = usuarioJpaController.findUsuario(id);
+		
+		Object[] fields = new Object[usuario.getClass().getDeclaredFields().length];
+		
+		int count = 0;
+		for (Field field : usuario.getClass().getDeclaredFields()) {
+			if (field.getName().contains("serialVersionUID") || field.getName().contains("carteiraClienteCollection") || 
+					field.getName().contains("sugestaoCompraCollection")  || field.getName().contains("carteiraClienteCollection") || 
+					field.getName().contains("sugestaoVendaCollection")){
+				count ++;
+				continue;
+			}
+			
+			field.setAccessible(true); // You might want to set modifier to public first.
+			Object value;
+			try {
+				value = field.get(usuario);
+				if (value instanceof TipoInvestidor) {
+					value = ((TipoInvestidor) value).getCdInvestidor();
+				}else if (value instanceof TipoTransacao) {
+					value = ((TipoTransacao) value).getCdTransacao();
+				}
+				
+			} catch (Exception e) {
+				throw new IllegalArgumentException(e.getMessage());
+			} 
+			if (value != null) {
+				fields[count] = value;
+			}
+			
+			count++;
 		}
 		
 		return fields;

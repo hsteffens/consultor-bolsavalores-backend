@@ -34,7 +34,7 @@ public final class BOAutenticacao {
 	public static TokenDTO logon(String userName, String password){
 		try{
 			UsuarioDTO usuario = BOUsuario.getUsuario(userName, password);
-			return createJWT(usuario.getId(), usuario.getNome(), 1800000l);
+			return createJWT(usuario.getId(), userName, 1800000l);
 		}catch(UsuarioException e){
 			ResponseBuilder builder = null;
 			builder = Response.status(Response.Status.UNAUTHORIZED).entity(e.getError());
@@ -74,6 +74,8 @@ public final class BOAutenticacao {
 		
 		TokenDTO tokenDTO = new TokenDTO();
 		tokenDTO.setToken(builder.compact());
+		tokenDTO.setIdUsuario(id.toString());
+		tokenDTO.setNomeUsuario(nome);
 
 		//Builds the JWT and serializes it to a compact, URL-safe string
 		return tokenDTO;
@@ -96,7 +98,11 @@ public final class BOAutenticacao {
 			return Response.status(401).type(MediaType.APPLICATION_JSON).entity(new Exception("O token informado é inválido")).build();
 		}
 		
-		return Response.ok().entity(claims.getIssuer()).build();
+		TokenDTO tokenDTO = new TokenDTO();
+		tokenDTO.setIdUsuario(((Integer)claims.get("id")).toString());
+		tokenDTO.setNomeUsuario((String)claims.get("nome"));
+		
+		return Response.ok(tokenDTO).build();
 	}
 
 }

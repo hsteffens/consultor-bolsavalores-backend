@@ -6,6 +6,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 
 import br.furb.consultor.autenticacao.BOAutenticacao;
+import br.furb.consultor.entities.TokenDTO;
 
 import com.sun.jersey.api.client.ClientResponse.Status;
 import com.sun.jersey.api.container.ContainerException;
@@ -31,7 +32,8 @@ public class CheckRequestFilter implements ContainerRequestFilter {
 			if (Status.OK.getStatusCode()  !=  response.getStatus()) {
 				throw new ContainerException((Exception) response.getEntity());
 			}
-			httRequest.getRequestHeaders().add("userName", (String)response.getEntity());
+			httRequest.getRequestHeaders().add("idUsuarioLogado", ((TokenDTO)response.getEntity()).getIdUsuario());
+			httRequest.getRequestHeaders().add("userName", ((TokenDTO)response.getEntity()).getNomeUsuario());
 			
 		}
 		return request;

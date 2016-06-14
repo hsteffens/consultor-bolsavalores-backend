@@ -25,9 +25,11 @@ public class ServicoUsuario {
 	@Path("/usuario-logado")
 	@Produces(MediaType.APPLICATION_JSON)
 	public UsuarioDTO getUsuarioLogada(){
-		UsuarioDTO usuarioDTO = new UsuarioDTO();
-		usuarioDTO.setUserName(httpRequest.getRequestHeader("userName").get(0));
-		return usuarioDTO;
+		String nomeUsuario = httpRequest.getRequestHeader("userName").get(0);
+		int id = Integer.parseInt(httpRequest.getRequestHeader("idUsuarioLogado").get(0));
+		UsuarioDTO usuarioLogado = BOUsuario.getUsuarioLogado(id);
+		usuarioLogado.setUserName(nomeUsuario);
+		return usuarioLogado;
 	}
 	
 	@POST
@@ -43,18 +45,8 @@ public class ServicoUsuario {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public StatusRespostaDTO alterarUsuario(UsuarioDTO usuario){
-		if (usuario != null && !usuario.getUserName().isEmpty() && !usuario.getEmail().isEmpty() && !usuario.getNome().isEmpty()) {
-			StatusRespostaDTO resposta = new StatusRespostaDTO();
-			resposta.setStatus("OK");
-			resposta.setMensagem("Usuário inserido com sucesso!");
-			
-			return resposta;
-		}
-		StatusRespostaDTO resposta = new StatusRespostaDTO();
-		resposta.setStatus("Erro");
-		resposta.setMensagem("Usuário não inserido a campos obrigatórios não preenchidos!");
-		
-		return resposta;
+		String idUsuario = httpRequest.getRequestHeader("idUsuarioLogado").get(0);
+		return BOUsuario.alterarUsuario(Integer.parseInt(idUsuario),usuario);
 	}
 	
 }

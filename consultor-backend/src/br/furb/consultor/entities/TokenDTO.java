@@ -1,11 +1,10 @@
 package br.furb.consultor.entities;
 
-import org.joda.time.LocalDate;
-
 public class TokenDTO {
 
 	private String token;
-	private LocalDate dataExpiracao;
+	private String idUsuario;
+	private String nomeUsuario;
 	
 	public String getToken() {
 		return token;
@@ -13,12 +12,19 @@ public class TokenDTO {
 	public void setToken(String token) {
 		this.token = token;
 	}
-	public LocalDate getDataExpiracao() {
-		return dataExpiracao;
+	public String getIdUsuario() {
+		return idUsuario;
 	}
-	public void setDataExpiracao(LocalDate dataExpiracao) {
-		this.dataExpiracao = dataExpiracao;
+	public void setIdUsuario(String idUsuario) {
+		this.idUsuario = idUsuario;
 	}
+	public String getNomeUsuario() {
+		return nomeUsuario;
+	}
+	public void setNomeUsuario(String nomeUsuario) {
+		this.nomeUsuario = nomeUsuario;
+	}
+
 	
 	
 }

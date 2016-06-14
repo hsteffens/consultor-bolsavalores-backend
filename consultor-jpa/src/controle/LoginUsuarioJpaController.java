@@ -45,6 +45,27 @@ public class LoginUsuarioJpaController implements Serializable {
         }
     }
 
+    public void edit(LoginUsuario loginUsuario) {
+    	EntityManager em = null;
+    	try {
+    		em = getEntityManager();
+    		em.getTransaction().begin();
+    		
+    		Usuario cdUsuario = loginUsuario.getCdUsuario();
+    		if (cdUsuario != null) {
+    			cdUsuario = em.getReference(cdUsuario.getClass(), cdUsuario.getCdUsuario());
+    			loginUsuario.setCdUsuario(cdUsuario);
+    		}
+    		
+    		em.merge(loginUsuario);
+    		em.getTransaction().commit();
+    	} finally {
+    		if (em != null) {
+    			em.close();
+    		}
+    	}
+    }
+
 
     public LoginUsuario findUsuario(String username, String password) {
     	EntityManager em = getEntityManager();
@@ -60,5 +81,4 @@ public class LoginUsuarioJpaController implements Serializable {
     	}
     }
 
-    
 }

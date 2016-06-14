@@ -1,31 +1,27 @@
 package controle;
 
-import controle.exceptions.NonexistentEntityException;
-import controle.exceptions.UsuarioException;
-
 import java.io.Serializable;
 import java.math.BigInteger;
-
-import javax.persistence.NoResultException;
-import javax.persistence.Query;
-import javax.persistence.EntityNotFoundException;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
-
-import persistencia.TipoInvestidor;
-import persistencia.TipoTransacao;
-import persistencia.CarteiraCliente;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityNotFoundException;
+import javax.persistence.NoResultException;
+import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 
+import persistencia.CarteiraCliente;
 import persistencia.SugestaoCompra;
 import persistencia.SugestaoVenda;
+import persistencia.TipoInvestidor;
+import persistencia.TipoTransacao;
 import persistencia.Usuario;
+import controle.exceptions.NonexistentEntityException;
+import controle.exceptions.UsuarioException;
 
 /**
  *
@@ -138,12 +134,6 @@ public class UsuarioJpaController implements Serializable {
             TipoInvestidor cdInvestidorNew = usuario.getCdInvestidor();
             TipoTransacao cdTransacaoOld = persistentUsuario.getCdTransacao();
             TipoTransacao cdTransacaoNew = usuario.getCdTransacao();
-            Collection<CarteiraCliente> carteiraClienteCollectionOld = persistentUsuario.getCarteiraClienteCollection();
-            Collection<CarteiraCliente> carteiraClienteCollectionNew = usuario.getCarteiraClienteCollection();
-            Collection<SugestaoCompra> sugestaoCompraCollectionOld = persistentUsuario.getSugestaoCompraCollection();
-            Collection<SugestaoCompra> sugestaoCompraCollectionNew = usuario.getSugestaoCompraCollection();
-            Collection<SugestaoVenda> sugestaoVendaCollectionOld = persistentUsuario.getSugestaoVendaCollection();
-            Collection<SugestaoVenda> sugestaoVendaCollectionNew = usuario.getSugestaoVendaCollection();
             if (cdInvestidorNew != null) {
                 cdInvestidorNew = em.getReference(cdInvestidorNew.getClass(), cdInvestidorNew.getCdInvestidor());
                 usuario.setCdInvestidor(cdInvestidorNew);
@@ -152,27 +142,7 @@ public class UsuarioJpaController implements Serializable {
                 cdTransacaoNew = em.getReference(cdTransacaoNew.getClass(), cdTransacaoNew.getCdTransacao());
                 usuario.setCdTransacao(cdTransacaoNew);
             }
-            Collection<CarteiraCliente> attachedCarteiraClienteCollectionNew = new ArrayList<CarteiraCliente>();
-            for (CarteiraCliente carteiraClienteCollectionNewCarteiraClienteToAttach : carteiraClienteCollectionNew) {
-                carteiraClienteCollectionNewCarteiraClienteToAttach = em.getReference(carteiraClienteCollectionNewCarteiraClienteToAttach.getClass(), carteiraClienteCollectionNewCarteiraClienteToAttach.getCdCarteira());
-                attachedCarteiraClienteCollectionNew.add(carteiraClienteCollectionNewCarteiraClienteToAttach);
-            }
-            carteiraClienteCollectionNew = attachedCarteiraClienteCollectionNew;
-            usuario.setCarteiraClienteCollection(carteiraClienteCollectionNew);
-            Collection<SugestaoCompra> attachedSugestaoCompraCollectionNew = new ArrayList<SugestaoCompra>();
-            for (SugestaoCompra sugestaoCompraCollectionNewSugestaoCompraToAttach : sugestaoCompraCollectionNew) {
-                sugestaoCompraCollectionNewSugestaoCompraToAttach = em.getReference(sugestaoCompraCollectionNewSugestaoCompraToAttach.getClass(), sugestaoCompraCollectionNewSugestaoCompraToAttach.getCdCompra());
-                attachedSugestaoCompraCollectionNew.add(sugestaoCompraCollectionNewSugestaoCompraToAttach);
-            }
-            sugestaoCompraCollectionNew = attachedSugestaoCompraCollectionNew;
-            usuario.setSugestaoCompraCollection(sugestaoCompraCollectionNew);
-            Collection<SugestaoVenda> attachedSugestaoVendaCollectionNew = new ArrayList<SugestaoVenda>();
-            for (SugestaoVenda sugestaoVendaCollectionNewSugestaoVendaToAttach : sugestaoVendaCollectionNew) {
-                sugestaoVendaCollectionNewSugestaoVendaToAttach = em.getReference(sugestaoVendaCollectionNewSugestaoVendaToAttach.getClass(), sugestaoVendaCollectionNewSugestaoVendaToAttach.getCdVenda());
-                attachedSugestaoVendaCollectionNew.add(sugestaoVendaCollectionNewSugestaoVendaToAttach);
-            }
-            sugestaoVendaCollectionNew = attachedSugestaoVendaCollectionNew;
-            usuario.setSugestaoVendaCollection(sugestaoVendaCollectionNew);
+            
             usuario = em.merge(usuario);
             if (cdInvestidorOld != null && !cdInvestidorOld.equals(cdInvestidorNew)) {
                 cdInvestidorOld.getUsuarioCollection().remove(usuario);
@@ -190,57 +160,7 @@ public class UsuarioJpaController implements Serializable {
                 cdTransacaoNew.getUsuarioCollection().add(usuario);
                 cdTransacaoNew = em.merge(cdTransacaoNew);
             }
-            for (CarteiraCliente carteiraClienteCollectionOldCarteiraCliente : carteiraClienteCollectionOld) {
-                if (!carteiraClienteCollectionNew.contains(carteiraClienteCollectionOldCarteiraCliente)) {
-                    carteiraClienteCollectionOldCarteiraCliente.setCdUsuario(null);
-                    carteiraClienteCollectionOldCarteiraCliente = em.merge(carteiraClienteCollectionOldCarteiraCliente);
-                }
-            }
-            for (CarteiraCliente carteiraClienteCollectionNewCarteiraCliente : carteiraClienteCollectionNew) {
-                if (!carteiraClienteCollectionOld.contains(carteiraClienteCollectionNewCarteiraCliente)) {
-                    Usuario oldCdUsuarioOfCarteiraClienteCollectionNewCarteiraCliente = carteiraClienteCollectionNewCarteiraCliente.getCdUsuario();
-                    carteiraClienteCollectionNewCarteiraCliente.setCdUsuario(usuario);
-                    carteiraClienteCollectionNewCarteiraCliente = em.merge(carteiraClienteCollectionNewCarteiraCliente);
-                    if (oldCdUsuarioOfCarteiraClienteCollectionNewCarteiraCliente != null && !oldCdUsuarioOfCarteiraClienteCollectionNewCarteiraCliente.equals(usuario)) {
-                        oldCdUsuarioOfCarteiraClienteCollectionNewCarteiraCliente.getCarteiraClienteCollection().remove(carteiraClienteCollectionNewCarteiraCliente);
-                        oldCdUsuarioOfCarteiraClienteCollectionNewCarteiraCliente = em.merge(oldCdUsuarioOfCarteiraClienteCollectionNewCarteiraCliente);
-                    }
-                }
-            }
-            for (SugestaoCompra sugestaoCompraCollectionOldSugestaoCompra : sugestaoCompraCollectionOld) {
-                if (!sugestaoCompraCollectionNew.contains(sugestaoCompraCollectionOldSugestaoCompra)) {
-                    sugestaoCompraCollectionOldSugestaoCompra.setCdUsuario(null);
-                    sugestaoCompraCollectionOldSugestaoCompra = em.merge(sugestaoCompraCollectionOldSugestaoCompra);
-                }
-            }
-            for (SugestaoCompra sugestaoCompraCollectionNewSugestaoCompra : sugestaoCompraCollectionNew) {
-                if (!sugestaoCompraCollectionOld.contains(sugestaoCompraCollectionNewSugestaoCompra)) {
-                    Usuario oldCdUsuarioOfSugestaoCompraCollectionNewSugestaoCompra = sugestaoCompraCollectionNewSugestaoCompra.getCdUsuario();
-                    sugestaoCompraCollectionNewSugestaoCompra.setCdUsuario(usuario);
-                    sugestaoCompraCollectionNewSugestaoCompra = em.merge(sugestaoCompraCollectionNewSugestaoCompra);
-                    if (oldCdUsuarioOfSugestaoCompraCollectionNewSugestaoCompra != null && !oldCdUsuarioOfSugestaoCompraCollectionNewSugestaoCompra.equals(usuario)) {
-                        oldCdUsuarioOfSugestaoCompraCollectionNewSugestaoCompra.getSugestaoCompraCollection().remove(sugestaoCompraCollectionNewSugestaoCompra);
-                        oldCdUsuarioOfSugestaoCompraCollectionNewSugestaoCompra = em.merge(oldCdUsuarioOfSugestaoCompraCollectionNewSugestaoCompra);
-                    }
-                }
-            }
-            for (SugestaoVenda sugestaoVendaCollectionOldSugestaoVenda : sugestaoVendaCollectionOld) {
-                if (!sugestaoVendaCollectionNew.contains(sugestaoVendaCollectionOldSugestaoVenda)) {
-                    sugestaoVendaCollectionOldSugestaoVenda.setCdUsuario(null);
-                    sugestaoVendaCollectionOldSugestaoVenda = em.merge(sugestaoVendaCollectionOldSugestaoVenda);
-                }
-            }
-            for (SugestaoVenda sugestaoVendaCollectionNewSugestaoVenda : sugestaoVendaCollectionNew) {
-                if (!sugestaoVendaCollectionOld.contains(sugestaoVendaCollectionNewSugestaoVenda)) {
-                    Usuario oldCdUsuarioOfSugestaoVendaCollectionNewSugestaoVenda = sugestaoVendaCollectionNewSugestaoVenda.getCdUsuario();
-                    sugestaoVendaCollectionNewSugestaoVenda.setCdUsuario(usuario);
-                    sugestaoVendaCollectionNewSugestaoVenda = em.merge(sugestaoVendaCollectionNewSugestaoVenda);
-                    if (oldCdUsuarioOfSugestaoVendaCollectionNewSugestaoVenda != null && !oldCdUsuarioOfSugestaoVendaCollectionNewSugestaoVenda.equals(usuario)) {
-                        oldCdUsuarioOfSugestaoVendaCollectionNewSugestaoVenda.getSugestaoVendaCollection().remove(sugestaoVendaCollectionNewSugestaoVenda);
-                        oldCdUsuarioOfSugestaoVendaCollectionNewSugestaoVenda = em.merge(oldCdUsuarioOfSugestaoVendaCollectionNewSugestaoVenda);
-                    }
-                }
-            }
+           
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
