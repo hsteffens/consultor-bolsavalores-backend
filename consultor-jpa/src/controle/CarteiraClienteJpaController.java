@@ -1,14 +1,20 @@
 package controle;
 
 import controle.exceptions.NonexistentEntityException;
+import controle.exceptions.UsuarioException;
+
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+
 import persistencia.Acao;
 import persistencia.CarteiraCliente;
 import persistencia.Usuario;
@@ -174,6 +180,18 @@ public class CarteiraClienteJpaController implements Serializable {
         } finally {
             em.close();
         }
+    }
+    
+    public List<CarteiraCliente> findCarteiraClienteByUserId(Integer id) {
+    	EntityManager em = getEntityManager();
+    	try {
+    		Query query = em.createNamedQuery("CarteiraCliente.findByUsuario").setParameter("cdUsuario", id);
+    		return query.getResultList();
+    	}catch(NoResultException e){
+    		throw new UsuarioException(e.getMessage());
+    	} finally {
+    		em.close();
+    	}
     }
 
     public int getCarteiraClienteCount() {

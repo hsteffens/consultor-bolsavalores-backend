@@ -4,7 +4,6 @@ import java.lang.reflect.Field;
 import java.math.BigInteger;
 
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.persistence.PersistenceException;
 
 import org.hibernate.exception.ConstraintViolationException;

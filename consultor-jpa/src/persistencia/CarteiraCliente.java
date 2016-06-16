@@ -1,6 +1,8 @@
 package persistencia;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,6 +15,9 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
+
 /**
  *
  * @author Diogo Lehner
@@ -22,16 +27,21 @@ import javax.persistence.Table;
 @NamedQueries({
     @NamedQuery(name = "CarteiraCliente.findAll", query = "SELECT c FROM CarteiraCliente c"),
     @NamedQuery(name = "CarteiraCliente.findByCdCarteira", query = "SELECT c FROM CarteiraCliente c WHERE c.cdCarteira = :cdCarteira"),
+    @NamedQuery(name = "CarteiraCliente.findByUsuario", query = "SELECT c FROM CarteiraCliente c WHERE c.cdUsuario.cdUsuario = :cdUsuario"),
     @NamedQuery(name = "CarteiraCliente.findByVlQuantidade", query = "SELECT c FROM CarteiraCliente c WHERE c.vlQuantidade = :vlQuantidade")})
 public class CarteiraCliente implements Serializable {
     private static final long serialVersionUID = 1L;
     
+    @GenericGenerator(name = "generator", strategy = "sequence-identity", parameters = @Parameter(name = "sequence", value = "cd_carteira_seq"))
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "cd_carteira")
     private Integer cdCarteira;
     
+    @Column(name = "vl_preco")
+    private BigDecimal vlPreco;
+
     @Column(name = "vl_quantidade")
     private Integer vlQuantidade;
     
@@ -81,8 +91,16 @@ public class CarteiraCliente implements Serializable {
     public void setCdUsuario(Usuario cdUsuario) {
         this.cdUsuario = cdUsuario;
     }
+    
+    public BigDecimal getVlPreco() {
+		return vlPreco;
+	}
 
-    @Override
+	public void setVlPreco(BigDecimal vlPreco) {
+		this.vlPreco = vlPreco;
+	}
+
+	@Override
     public int hashCode() {
         int hash = 0;
         hash += (cdCarteira != null ? cdCarteira.hashCode() : 0);

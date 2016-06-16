@@ -2,18 +2,24 @@ package controle;
 
 import controle.exceptions.NonexistentEntityException;
 import controle.exceptions.PreexistingEntityException;
+
 import java.io.Serializable;
+
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+
 import persistencia.BolsaValores;
 import persistencia.CarteiraCliente;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+
 import persistencia.Acao;
 
 /**
@@ -31,7 +37,7 @@ public class AcaoJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Acao acao) throws PreexistingEntityException, Exception {
+    public Acao create(Acao acao){
         if (acao.getCarteiraClienteCollection() == null) {
             acao.setCarteiraClienteCollection(new ArrayList<CarteiraCliente>());
         }
@@ -44,32 +50,11 @@ public class AcaoJpaController implements Serializable {
                 cdBolsavalores = em.getReference(cdBolsavalores.getClass(), cdBolsavalores.getCdBolsavalores());
                 acao.setCdBolsavalores(cdBolsavalores);
             }
-            Collection<CarteiraCliente> attachedCarteiraClienteCollection = new ArrayList<CarteiraCliente>();
-            for (CarteiraCliente carteiraClienteCollectionCarteiraClienteToAttach : acao.getCarteiraClienteCollection()) {
-                carteiraClienteCollectionCarteiraClienteToAttach = em.getReference(carteiraClienteCollectionCarteiraClienteToAttach.getClass(), carteiraClienteCollectionCarteiraClienteToAttach.getCdCarteira());
-                attachedCarteiraClienteCollection.add(carteiraClienteCollectionCarteiraClienteToAttach);
-            }
-            acao.setCarteiraClienteCollection(attachedCarteiraClienteCollection);
             em.persist(acao);
-            if (cdBolsavalores != null) {
-                cdBolsavalores.getAcaoCollection().add(acao);
-                cdBolsavalores = em.merge(cdBolsavalores);
-            }
-            for (CarteiraCliente carteiraClienteCollectionCarteiraCliente : acao.getCarteiraClienteCollection()) {
-                Acao oldDsCodigoOfCarteiraClienteCollectionCarteiraCliente = carteiraClienteCollectionCarteiraCliente.getDsCodigo();
-                carteiraClienteCollectionCarteiraCliente.setDsCodigo(acao);
-                carteiraClienteCollectionCarteiraCliente = em.merge(carteiraClienteCollectionCarteiraCliente);
-                if (oldDsCodigoOfCarteiraClienteCollectionCarteiraCliente != null) {
-                    oldDsCodigoOfCarteiraClienteCollectionCarteiraCliente.getCarteiraClienteCollection().remove(carteiraClienteCollectionCarteiraCliente);
-                    oldDsCodigoOfCarteiraClienteCollectionCarteiraCliente = em.merge(oldDsCodigoOfCarteiraClienteCollectionCarteiraCliente);
-                }
-            }
             em.getTransaction().commit();
+            return acao;
         } catch (Exception ex) {
-            if (findAcao(acao.getDsCodigo()) != null) {
-                throw new PreexistingEntityException("Acao " + acao + " already exists.", ex);
-            }
-            throw ex;
+                throw new RuntimeException("Acao " + acao + " already exists.", ex);
         } finally {
             if (em != null) {
                 em.close();
