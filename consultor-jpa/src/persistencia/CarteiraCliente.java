@@ -28,6 +28,7 @@ import org.hibernate.annotations.Parameter;
     @NamedQuery(name = "CarteiraCliente.findAll", query = "SELECT c FROM CarteiraCliente c"),
     @NamedQuery(name = "CarteiraCliente.findByCdCarteira", query = "SELECT c FROM CarteiraCliente c WHERE c.cdCarteira = :cdCarteira"),
     @NamedQuery(name = "CarteiraCliente.findByUsuario", query = "SELECT c FROM CarteiraCliente c WHERE c.cdUsuario.cdUsuario = :cdUsuario"),
+    @NamedQuery(name = "CarteiraCliente.findByAcaoAndUsuario", query = "SELECT c FROM CarteiraCliente c WHERE c.cdUsuario.cdUsuario = :cdUsuario and c.dsCodigo.dsCodigo = :dsCodigo"),
     @NamedQuery(name = "CarteiraCliente.findByVlQuantidade", query = "SELECT c FROM CarteiraCliente c WHERE c.vlQuantidade = :vlQuantidade")})
 public class CarteiraCliente implements Serializable {
     private static final long serialVersionUID = 1L;

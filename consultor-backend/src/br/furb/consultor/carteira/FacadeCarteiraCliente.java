@@ -5,6 +5,8 @@ import java.util.List;
 
 import persistencia.CarteiraCliente;
 import br.furb.consultor.carteiracliente.BOCarteiraCliente;
+import br.furb.consultor.entities.AcaoBolsaDTO;
+import br.furb.consultor.entities.AcoesDTO;
 import br.furb.consultor.entities.AcoesUsuarioDTO;
 import br.furb.consultor.entities.CarteiraClienteDTO;
 import br.furb.consultor.entities.StatusRespostaDTO;
@@ -20,6 +22,27 @@ public final class FacadeCarteiraCliente {
 		StatusRespostaDTO resposta = new StatusRespostaDTO();
 		try {
 			BOCarteiraCliente.inserirAcaoCarteiraCliente(idUsuario, acao, quantidade, preco);
+			resposta.setStatus("OK");
+			resposta.setMensagem("Ação inserida na carteira do usuário com sucesso!");
+			
+			return resposta;
+		}catch (UsuarioException e) {
+			resposta.setStatus("Erro");
+			resposta.setMensagem(e.getError());
+		} catch (Exception e) {
+			resposta.setStatus("Erro");
+			resposta.setMensagem(e.getMessage());
+		}
+		
+		return resposta;
+	}
+
+	public static StatusRespostaDTO removerAcaoCarteiraCliente(Integer idUsuario, AcoesDTO acoes){
+		StatusRespostaDTO resposta = new StatusRespostaDTO();
+		try {
+			for (AcaoBolsaDTO acao : acoes.getResult()) {
+				BOCarteiraCliente.removerAcaoCarteiraCliente(idUsuario, acao.getCodigo());
+			}
 			resposta.setStatus("OK");
 			resposta.setMensagem("Ação inserida na carteira do usuário com sucesso!");
 			

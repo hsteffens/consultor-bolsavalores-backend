@@ -193,6 +193,17 @@ public class CarteiraClienteJpaController implements Serializable {
     		em.close();
     	}
     }
+    public CarteiraCliente findCarteiraAcaoAndUsuario(Integer id, String acao) {
+    	EntityManager em = getEntityManager();
+    	try {
+    		Query query = em.createNamedQuery("CarteiraCliente.findByAcaoAndUsuario").setParameter("cdUsuario", id).setParameter("dsCodigo", acao.replace(".SA", ""));
+    		return (CarteiraCliente) query.getSingleResult();
+    	}catch(NoResultException e){
+    		throw new UsuarioException(e.getMessage());
+    	} finally {
+    		em.close();
+    	}
+    }
 
     public int getCarteiraClienteCount() {
         EntityManager em = getEntityManager();

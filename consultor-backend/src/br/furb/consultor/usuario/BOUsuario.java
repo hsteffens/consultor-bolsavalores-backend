@@ -101,13 +101,13 @@ public final class BOUsuario {
 	public static Long getTimeExpiracao(Long codigoUsuario){
 		Long expira = 0l;
 		try {
-			Usuario usuario = getUsuario(codigoUsuario);
+			UsuarioDTO usuario = getUsuarioLogado(codigoUsuario.intValue());
 			if (usuario != null) {
-				if (usuario.getTipoInvestidor() == EnTipoInvestidor.CONSERVADOR.getCodigo()) {
+				if (usuario.getPerfilInvestidor()== EnTipoInvestidor.CONSERVADOR.getCodigo()) {
 					expira = 1800000l;//Cada 30 Minutos
-				}else if (usuario.getTipoInvestidor() == EnTipoInvestidor.MODERADO.getCodigo()) {
+				}else if (usuario.getPerfilInvestidor() == EnTipoInvestidor.MODERADO.getCodigo()) {
 					expira = 600000l;//Cada 10 Minutos
-				} else if (usuario.getTipoInvestidor() == EnTipoInvestidor.AGRESSIVO.getCodigo()){
+				} else if (usuario.getPerfilInvestidor() == EnTipoInvestidor.AGRESSIVO.getCodigo()){
 					expira = 60000l;//Cada Minuto
 				}
 			}

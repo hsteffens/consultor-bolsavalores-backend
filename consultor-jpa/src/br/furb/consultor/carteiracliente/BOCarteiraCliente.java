@@ -15,6 +15,7 @@ import controle.AcaoJpaController;
 import controle.BolsaValoresJpaController;
 import controle.CarteiraClienteJpaController;
 import controle.UsuarioJpaController;
+import controle.exceptions.NonexistentEntityException;
 import controle.exceptions.UsuarioException;
 
 public final class BOCarteiraCliente {
@@ -64,10 +65,28 @@ public final class BOCarteiraCliente {
 		}
         
 	}
+	public static void removerAcaoCarteiraCliente(Integer idUsuario, String acao){
+		EntityManagerFactory factory = EntityManager.getFactory();
+		
+		CarteiraClienteJpaController carteiraClienteJpaController = new CarteiraClienteJpaController(factory);
+		CarteiraCliente carteira = carteiraClienteJpaController.findCarteiraAcaoAndUsuario(idUsuario, acao);
+
+		try{
+			carteiraClienteJpaController.destroy(carteira.getCdCarteira());
+		}catch (NonexistentEntityException ex) {
+			if (ex.getCause() instanceof ConstraintViolationException) {
+				throw new UsuarioException("Está ação não cadastrada para este usuário!");
+			}
+			throw new UsuarioException(ex.getMessage());
+		}  catch (Exception ex) {
+			throw new UsuarioException(ex.getMessage());
+		}
+		
+	}
 
 	public static List<CarteiraCliente> getCarteiraCliente(int id) {
 		EntityManagerFactory factory = EntityManager.getFactory();
 		CarteiraClienteJpaController carteiraClienteJpaController = new CarteiraClienteJpaController(factory);
-		return carteiraClienteJpaController.findCarteiraClienteEntities();
+		return carteiraClienteJpaController.findCarteiraClienteByUserId(id);
 	}
 }
