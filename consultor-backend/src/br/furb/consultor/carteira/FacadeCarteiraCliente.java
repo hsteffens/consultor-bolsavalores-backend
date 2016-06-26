@@ -44,7 +44,7 @@ public final class FacadeCarteiraCliente {
 				BOCarteiraCliente.removerAcaoCarteiraCliente(idUsuario, acao.getCodigo());
 			}
 			resposta.setStatus("OK");
-			resposta.setMensagem("Ação inserida na carteira do usuário com sucesso!");
+			resposta.setMensagem("Ação vendida com sucesso!");
 			
 			return resposta;
 		}catch (UsuarioException e) {

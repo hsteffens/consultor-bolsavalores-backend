@@ -4,6 +4,7 @@ import javax.ws.rs.core.MediaType;
 
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 
+import br.furb.consultor.cotacao.BOCotacao;
 import br.furb.consultor.entities.AcaoBolsaDTO;
 import br.furb.consultor.time.BOClock;
 import br.furb.consultor.usuario.BOUsuario;
@@ -35,7 +36,14 @@ public final class BOAcaoBolsaValores {
 			+ response.getStatus());
 		}
 
-		return response.getEntity(AcaoBolsaDTO.class);
+		AcaoBolsaDTO acaoBolsaDTO = response.getEntity(AcaoBolsaDTO.class);
+		
+		
+		Integer hora = formatTime(acaoBolsaDTO.getHoraUltimaNegociacao());
+		double porcentagem = getDoubleValue(acaoBolsaDTO.getVariacaoPercentual());
+		BOCotacao.createCotacao(codigoAcao, acaoBolsaDTO.getDataUltimaNegociacao(), hora, acaoBolsaDTO.getValorAbertura(), acaoBolsaDTO.getValorAtual(), porcentagem);
+		
+		return acaoBolsaDTO;
 	}
 
 	public static AcaoBolsaDTO getAcaoBolsa(String codigoAcao, Long codigoUsuario){
@@ -56,5 +64,22 @@ public final class BOAcaoBolsaValores {
 		}
 		
 		return response.getEntity(AcaoBolsaDTO.class);
+	}
+	
+	private static int formatTime(String horaString){
+		String[] particionamento = horaString.split(":");
+		int hora = 0;
+		if (particionamento[1].contains("pm")) {
+			 hora = 12 + Integer.parseInt(particionamento[0]);
+		}else{
+			hora = Integer.parseInt(particionamento[0]);
+		}
+			int minutos = Integer.parseInt(particionamento[1].replace("am", "").replace("pm", ""));
+		return (hora * 60) + minutos;
+	}
+	
+	private static double getDoubleValue(String porcentagemStr){
+		String porcentagem = porcentagemStr.substring(0, porcentagemStr.length() - 1);
+		return Double.parseDouble(porcentagem);
 	}
 }

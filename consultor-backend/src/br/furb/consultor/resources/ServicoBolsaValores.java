@@ -11,7 +11,6 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 
 import br.furb.consultor.carteira.FacadeCarteiraCliente;
-import br.furb.consultor.carteiracliente.BOCarteiraCliente;
 import br.furb.consultor.compra.FacadeCompraAcao;
 import br.furb.consultor.entities.AcoesDTO;
 import br.furb.consultor.entities.StatusRespostaDTO;

@@ -2,15 +2,19 @@ package persistencia;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Date;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 
 /**
  *
@@ -26,8 +30,9 @@ import javax.persistence.Table;
 public class HistoricoCotacao implements Serializable {
     private static final long serialVersionUID = 1L;
     
+    @GenericGenerator(name = "generator", strategy = "sequence-identity", parameters = @Parameter(name = "sequence", value = "cd_historico_seq"))
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(generator = "generator")
     @Basic(optional = false)
     @Column(name = "cd_historico")
     private Integer cdHistorico;
@@ -37,6 +42,12 @@ public class HistoricoCotacao implements Serializable {
     
     @Column(name = "ds_codigo")
     private String dsCodigo;
+    
+    @Column(name = "dt_dia")
+    private Date dtDia;
+
+    @Column(name = "cd_hora")
+    private Integer cdHora;
 
     public HistoricoCotacao() {
     }
@@ -69,26 +80,74 @@ public class HistoricoCotacao implements Serializable {
         this.dsCodigo = dsCodigo;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (cdHistorico != null ? cdHistorico.hashCode() : 0);
-        return hash;
-    }
+    public Date getDtDia() {
+		return dtDia;
+	}
 
-    @Override
-    public boolean equals(Object object) {
-        if (!(object instanceof HistoricoCotacao)) {
-            return false;
-        }
-        HistoricoCotacao other = (HistoricoCotacao) object;
-        if ((this.cdHistorico == null && other.cdHistorico != null) || (this.cdHistorico != null && !this.cdHistorico.equals(other.cdHistorico))) {
-            return false;
-        }
-        return true;
-    }
+	public void setDtDia(Date dtDia) {
+		this.dtDia = dtDia;
+	}
 
-    @Override
+	public Integer getCdHora() {
+		return cdHora;
+	}
+
+	public void setCdHora(Integer cdHora) {
+		this.cdHora = cdHora;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((cdHistorico == null) ? 0 : cdHistorico.hashCode());
+		result = prime * result + ((cdHora == null) ? 0 : cdHora.hashCode());
+		result = prime * result
+				+ ((dsCodigo == null) ? 0 : dsCodigo.hashCode());
+		result = prime * result + ((dtDia == null) ? 0 : dtDia.hashCode());
+		result = prime * result + ((vlPreco == null) ? 0 : vlPreco.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		HistoricoCotacao other = (HistoricoCotacao) obj;
+		if (cdHistorico == null) {
+			if (other.cdHistorico != null)
+				return false;
+		} else if (!cdHistorico.equals(other.cdHistorico))
+			return false;
+		if (cdHora == null) {
+			if (other.cdHora != null)
+				return false;
+		} else if (!cdHora.equals(other.cdHora))
+			return false;
+		if (dsCodigo == null) {
+			if (other.dsCodigo != null)
+				return false;
+		} else if (!dsCodigo.equals(other.dsCodigo))
+			return false;
+		if (dtDia == null) {
+			if (other.dtDia != null)
+				return false;
+		} else if (!dtDia.equals(other.dtDia))
+			return false;
+		if (vlPreco == null) {
+			if (other.vlPreco != null)
+				return false;
+		} else if (!vlPreco.equals(other.vlPreco))
+			return false;
+		return true;
+	}
+
+	@Override
     public String toString() {
         return "persistencia.HistoricoCotacao[ cdHistorico=" + cdHistorico + " ]";
     }
