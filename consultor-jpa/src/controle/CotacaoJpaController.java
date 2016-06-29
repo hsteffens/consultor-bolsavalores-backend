@@ -78,8 +78,8 @@ public class CotacaoJpaController implements Serializable {
 	            } catch (EntityNotFoundException enfe) {
 	                return;
 	            }
-	           
-	            em.remove(cotacao);
+	            Cotacao cotacaoMerge = em.merge(cotacao);
+	            em.remove(cotacaoMerge);
 	            em.getTransaction().commit();
 	        } finally {
 	            if (em != null) {

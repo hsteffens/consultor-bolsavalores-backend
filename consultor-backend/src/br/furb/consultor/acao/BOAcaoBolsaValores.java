@@ -41,7 +41,8 @@ public final class BOAcaoBolsaValores {
 		
 		Integer hora = formatTime(acaoBolsaDTO.getHoraUltimaNegociacao());
 		double porcentagem = getDoubleValue(acaoBolsaDTO.getVariacaoPercentual());
-		BOCotacao.createCotacao(codigoAcao, acaoBolsaDTO.getDataUltimaNegociacao(), hora, acaoBolsaDTO.getValorAbertura(), acaoBolsaDTO.getValorAtual(), porcentagem);
+		BOCotacao.createCotacao(codigoAcao, acaoBolsaDTO.getDataUltimaNegociacao(), hora, //
+								acaoBolsaDTO.getValorAbertura(), acaoBolsaDTO.getValorAtual(), porcentagem, acaoBolsaDTO.getMenorValorDia(), acaoBolsaDTO.getMaiorValorDia());
 		
 		return acaoBolsaDTO;
 	}

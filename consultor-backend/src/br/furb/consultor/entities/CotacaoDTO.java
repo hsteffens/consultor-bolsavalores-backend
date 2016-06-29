@@ -10,6 +10,9 @@ public class CotacaoDTO {
 	private Double valorAbertura;
 	private Double valorAtual;
 	private Double variacaoPercentual;
+	private Double baixa;
+	private Double alta;
+	
 	public String getCodigo() {
 		return codigo;
 	}
@@ -45,6 +48,18 @@ public class CotacaoDTO {
 	}
 	public void setVariacaoPercentual(Double variacaoPercentual) {
 		this.variacaoPercentual = variacaoPercentual;
+	}
+	public Double getBaixa() {
+		return baixa;
+	}
+	public void setBaixa(Double baixa) {
+		this.baixa = baixa;
+	}
+	public Double getAlta() {
+		return alta;
+	}
+	public void setAlta(Double alta) {
+		this.alta = alta;
 	}
 	
 }

@@ -24,7 +24,7 @@ public final class BOCotacao {
 		
 	}
 	
-	public static void createCotacao(String codigoAcao, LocalDate data, Integer hora, Double valorAbertura, Double valor, Double percentual){
+	public static void createCotacao(String codigoAcao, LocalDate data, Integer hora, Double valorAbertura, Double valor, Double percentual, Double baixa, Double alta){
 		EntityManagerFactory factory = EntityManager.getFactory();
 		
 		Cotacao cotacao = new Cotacao();
@@ -34,6 +34,8 @@ public final class BOCotacao {
 		cotacao.setVlAbertura(new BigDecimal(valorAbertura));
 		cotacao.setVlPreco(new BigDecimal(valor));
 		cotacao.setVlPercentual(new BigDecimal(percentual));
+		cotacao.setVlBaixa(new BigDecimal(baixa));
+		cotacao.setVlAlta(new BigDecimal(alta));
 		
 		AcaoJpaController acaoJpaController = new AcaoJpaController(factory);
 		Acao acaoBolsa = acaoJpaController.findAcao(codigoAcao);

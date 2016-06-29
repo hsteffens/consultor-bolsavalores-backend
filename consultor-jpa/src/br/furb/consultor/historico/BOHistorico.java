@@ -1,6 +1,7 @@
 package br.furb.consultor.historico;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceException;
@@ -8,8 +9,10 @@ import javax.persistence.PersistenceException;
 import org.hibernate.exception.ConstraintViolationException;
 import org.joda.time.LocalDate;
 
+import persistencia.Cotacao;
 import persistencia.HistoricoCotacao;
 import provider.EntityManager;
+import controle.CotacaoJpaController;
 import controle.HistoricoCotacaoJpaController;
 import controle.exceptions.CotacaoException;
 
@@ -39,6 +42,13 @@ public final class BOHistorico {
         }  catch (Exception ex) {
 			throw new CotacaoException(ex.getMessage());
 		}
+	}
+	
+	public static List<HistoricoCotacao> getHistoricoCotacoes(){
+		EntityManagerFactory factory = EntityManager.getFactory();
+		
+		HistoricoCotacaoJpaController historicoCotacaoJpaController = new HistoricoCotacaoJpaController(factory);
+		return historicoCotacaoJpaController.findHistoricoCotacaoEntities();
 	}
 	
 }

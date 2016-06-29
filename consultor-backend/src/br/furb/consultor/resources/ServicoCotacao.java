@@ -7,6 +7,7 @@ import javax.ws.rs.core.MediaType;
 
 import br.furb.consultor.cotacao.FacadeCotacao;
 import br.furb.consultor.entities.AcoesCotacaoDTO;
+import br.furb.consultor.entities.HistoricosCotacaoDTO;
 
 @Path("/cotacao")
 public class ServicoCotacao {
@@ -15,5 +16,12 @@ public class ServicoCotacao {
 	@Produces(MediaType.APPLICATION_JSON)
 	public AcoesCotacaoDTO getCotacoes(){
 		return FacadeCotacao.getCotacoes();
+	}
+
+	@GET
+	@Path("/historico")
+	@Produces(MediaType.APPLICATION_JSON)
+	public HistoricosCotacaoDTO getHistoricosCotacoes(){
+		return FacadeCotacao.getHistoricosCotacao();
 	}
 }

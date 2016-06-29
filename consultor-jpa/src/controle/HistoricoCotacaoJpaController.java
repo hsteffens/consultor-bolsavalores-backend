@@ -1,15 +1,21 @@
 package controle;
 
-import controle.exceptions.NonexistentEntityException;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
+import javax.persistence.NoResultException;
+import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+
 import persistencia.HistoricoCotacao;
+import persistencia.LoginUsuario;
+import controle.exceptions.NonexistentEntityException;
+import controle.exceptions.UsuarioException;
 
 /**
  *
@@ -27,17 +33,21 @@ public class HistoricoCotacaoJpaController implements Serializable {
     }
 
     public void create(HistoricoCotacao historicoCotacao) {
-        EntityManager em = null;
-        try {
-            em = getEntityManager();
-            em.getTransaction().begin();
-            em.persist(historicoCotacao);
-            em.getTransaction().commit();
-        } finally {
-            if (em != null) {
-                em.close();
-            }
-        }
+    	HistoricoCotacao findHistoricoCotacao = findHistoricoCotacao(historicoCotacao.getDsCodigo(), historicoCotacao.getDtDia(), historicoCotacao.getCdHora());
+
+    	if (findHistoricoCotacao == null) {
+	    	EntityManager em = null;
+	        try {
+	            em = getEntityManager();
+	            em.getTransaction().begin();
+	            em.persist(historicoCotacao);
+	            em.getTransaction().commit();
+	        } finally {
+	            if (em != null) {
+	                em.close();
+	            }
+	        }
+    	}
     }
 
     public void edit(HistoricoCotacao historicoCotacao) throws NonexistentEntityException, Exception {
@@ -128,6 +138,21 @@ public class HistoricoCotacaoJpaController implements Serializable {
         } finally {
             em.close();
         }
+    }
+    
+    public HistoricoCotacao findHistoricoCotacao(String codigoAcao, Date dia, Integer hora) {
+    	EntityManager em = getEntityManager();
+    	try {
+    		Query query = em.createNamedQuery("HistoricoCotacao.findByKeys")
+    				.setParameter("dsCodigo", codigoAcao)
+    				.setParameter("dtDia", dia)
+    				.setParameter("cdHora", hora);
+    		return (HistoricoCotacao) query.getSingleResult();
+    	}catch(NoResultException e){
+    		return null;
+    	} finally {
+    		em.close();
+    	}
     }
     
 }

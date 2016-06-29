@@ -40,6 +40,12 @@ public class Cotacao implements Serializable{
 	 
 	 @Column(name = "vl_percentual")
 	 private BigDecimal vlPercentual;
+	 
+	 @Column(name = "vl_baixa")
+	 private BigDecimal vlBaixa;
+	 
+	 @Column(name = "vl_alta")
+	 private BigDecimal vlAlta;
 
 	public String getDsCodigo() {
 		return dsCodigo;
@@ -89,6 +95,14 @@ public class Cotacao implements Serializable{
 		this.vlPercentual = vlPercentual;
 	}
 
+	public BigDecimal getVlBaixa() {
+		return vlBaixa;
+	}
+
+	public void setVlBaixa(BigDecimal vlBaixa) {
+		this.vlBaixa = vlBaixa;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -99,6 +113,8 @@ public class Cotacao implements Serializable{
 		result = prime * result + ((dtDia == null) ? 0 : dtDia.hashCode());
 		result = prime * result
 				+ ((vlAbertura == null) ? 0 : vlAbertura.hashCode());
+		result = prime * result + ((vlAlta == null) ? 0 : vlAlta.hashCode());
+		result = prime * result + ((vlBaixa == null) ? 0 : vlBaixa.hashCode());
 		result = prime * result
 				+ ((vlPercentual == null) ? 0 : vlPercentual.hashCode());
 		result = prime * result + ((vlPreco == null) ? 0 : vlPreco.hashCode());
@@ -134,6 +150,16 @@ public class Cotacao implements Serializable{
 				return false;
 		} else if (!vlAbertura.equals(other.vlAbertura))
 			return false;
+		if (vlAlta == null) {
+			if (other.vlAlta != null)
+				return false;
+		} else if (!vlAlta.equals(other.vlAlta))
+			return false;
+		if (vlBaixa == null) {
+			if (other.vlBaixa != null)
+				return false;
+		} else if (!vlBaixa.equals(other.vlBaixa))
+			return false;
 		if (vlPercentual == null) {
 			if (other.vlPercentual != null)
 				return false;
@@ -145,6 +171,14 @@ public class Cotacao implements Serializable{
 		} else if (!vlPreco.equals(other.vlPreco))
 			return false;
 		return true;
+	}
+
+	public BigDecimal getVlAlta() {
+		return vlAlta;
+	}
+
+	public void setVlAlta(BigDecimal vlAlta) {
+		this.vlAlta = vlAlta;
 	}
 
 	@Override

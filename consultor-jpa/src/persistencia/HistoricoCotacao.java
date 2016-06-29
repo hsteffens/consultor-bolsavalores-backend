@@ -26,6 +26,7 @@ import org.hibernate.annotations.Parameter;
     @NamedQuery(name = "HistoricoCotacao.findAll", query = "SELECT h FROM HistoricoCotacao h"),
     @NamedQuery(name = "HistoricoCotacao.findByCdHistorico", query = "SELECT h FROM HistoricoCotacao h WHERE h.cdHistorico = :cdHistorico"),
     @NamedQuery(name = "HistoricoCotacao.findByVlPreco", query = "SELECT h FROM HistoricoCotacao h WHERE h.vlPreco = :vlPreco"),
+    @NamedQuery(name = "HistoricoCotacao.findByKeys", query = "SELECT h FROM HistoricoCotacao h WHERE h.dsCodigo = :dsCodigo and h.dtDia = :dtDia and h.cdHora = :cdHora"),
     @NamedQuery(name = "HistoricoCotacao.findByDsCodigo", query = "SELECT h FROM HistoricoCotacao h WHERE h.dsCodigo = :dsCodigo")})
 public class HistoricoCotacao implements Serializable {
     private static final long serialVersionUID = 1L;
